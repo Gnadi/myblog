@@ -2,6 +2,7 @@
 import BaseLayout from "./BaseLayout.astro";
 const { frontmatter } = Astro.props;
 import { AstroSeo } from "@astrolib/seo";
+import { Image } from 'astro:assets';
 ---
 
 <!---
@@ -45,16 +46,19 @@ Use AstroSeo in all the pages you want different Seo than the index page
   <section>
     <div class="px-8 py-12 md:px-12 mx-auto lg:pt-24 max-w-7xl lg:px-32">
       <div class="lg:text-center">
-        <img
+        <Image
           class="lg:h-72 w-full  object-cover object-center"
           src={frontmatter.image.url}
           alt={frontmatter.image.alt}
+          width="480"
+          height="620"
+          loading="eager"
           />
          <div class="flex  flex-col md:flex-row mt-4 justify-between">
             <p class="text-xs text-zinc-500 ">{frontmatter.pubDate.toString().slice(0, 10)} - Written by: {frontmatter.author}</p>
            <div class="flex gap-3">
               {
-                frontmatter.tags.map((tag) => (
+                frontmatter.tags.map((tag: string) => (
                   <span class="inline-flex items-center uppercase    hover:text-blue-500   text-xs font-medium text-black">
                     <a href={`/tags/${tag}`}>{tag}</a>
                   </span>
