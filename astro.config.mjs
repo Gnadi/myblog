@@ -3,6 +3,8 @@ import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
 import mdx from "@astrojs/mdx";
 
+import icon from "astro-icon";
+
 // https://astro.build/config
 export default defineConfig({
   markdown: {
@@ -17,5 +19,5 @@ export default defineConfig({
     drafts: true
   },
   site: 'https://lexingtonthemes.com',
-  integrations: [tailwind(), sitemap(), mdx()]
+  integrations: [tailwind(), sitemap(), mdx(), icon()]
 });
