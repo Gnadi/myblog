@@ -11,13 +11,12 @@ const pageTitle = "Tag Index";
 <BaseLayout pageTitle={pageTitle}>
   <section>
     <div class="px-8 md:px-12 mx-auto max-w-7xl py-12 lg:px-32">
-      <ol role="list" class="flex flex-col space-y-2 mt-6">
-        {sortedTags.map((tag) => (
-          <li >
-            <a class="text-4xl tracking-tight text-balance font-medium font-display text-black md:text-6xl hover:text-blue-500" href={`/tags/${tag}`}>{tag}</a>
-          </li>
-        ))}
-      </ol>
+      {sortedTags.map((tag) => (
+          <label class="relative mb-4 mr-4 block h-auto w-auto cursor-pointer rounded-full px-6 py-3 transition text-primary bg-secondary focus-ring opacity-100" data-reach-custom-checkbox-container="" data-state="unchecked">
+            <input type="checkbox" data-reach-custom-checkbox-input="" value="review">
+            <span>{tag}</span>
+          </label>
+      ))}
     </div>
   </section>
 </BaseLayout>

@@ -1,25 +1,24 @@
 ---
 import { Image } from 'astro:assets';
 
-const { title, url, description, pubDate, author, image, tags } = Astro.props;
+const { title, url, description, pubDate, author, image, tags , index} = Astro.props;
 ---
 
 <li>
   <a href={url} title={title} class="group">
-    <article class="flex-1 h-full flex flex-col">
+    <article class="flex-1 h-full flex flex-col pr-5">
       <div class="block w-full lg:col-span-2">
         <Image
-          class="aspect-[2/3] object-cover bg-center h-full w-full"
+            class="aspect-[2/3] object-cover bg-center h-full w-full rounded-tr-xl rounded-tl-xl"
           src={image}
           alt={title}
-          loading="eager"
+          loading={index < 3 ? "eager" : "lazy"}
           width="480"
           height="620"
         />
       </div>
       <div
-        class="flex flex-col items-start justify-between h-full flex-1 w-full p-4"
-      >
+        class="flex flex-col items-start justify-between h-full flex-1 w-full p-4 bg-gray-100 rounded-bl-xl rounded-br-xl">
         <div>
           <div class="inline-flex space-x-1 items-center">
             <p class="text-xs font-medium text-black">{author}</p>
