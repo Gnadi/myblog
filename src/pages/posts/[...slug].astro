@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import MarkdownPostLayout from '../../layouts/MarkdownPostLayout.astro';
+import {Icon} from "astro-icon/components";
 export async function getStaticPaths() {
   const blogEntries = await getCollection('posts');
   return blogEntries.map(entry => ({
@@ -12,4 +13,13 @@ const { Content } = await entry.render();
 ---
 <MarkdownPostLayout frontmatter={entry.data}>
   <Content />
+  <div class="flex justify-between">
+
+    <button class="flex items-center rounded-full border border-gray-300 bg-secondary-50 px-3 py-2 text-center text-sm font-medium text-gray-900 hover:bg-gray-100">
+      <Icon name="iconamoon:arrow-left-2"/> <span class="pl-1 pr-1">Zurück</span></button>
+    <button class="pl-4 pr-4 flex items-center rounded-full border border-gray-300 bg-secondary-50 text-center text-sm font-medium text-gray-900 hover:bg-gray-100">
+      <Icon class="m-3" name="iconamoon:home"/></button>
+    <button class="flex items-center rounded-full border border-gray-300 bg-secondary-50 px-3 py-2 text-center text-sm font-medium text-gray-900 hover:bg-gray-100">
+       <span class="pl-1 pr-1">Nächstes</span><Icon name="iconamoon:arrow-right-2"/></button>
+  </div>
 </MarkdownPostLayout>
