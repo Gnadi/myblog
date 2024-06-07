@@ -1,12 +1,9 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import EntriesOne from "@/components/entries/EntriesOne.astro";
-import { getCollection } from "astro:content";
 import {useStoryblokApi} from "@storyblok/astro";
 import BlogPostList from "../../storyblok/BlogPostList.astro";
 
 export async function getStaticPaths() {
-
   const storyblokApi = useStoryblokApi();
   const { data } = await storyblokApi.get('cdn/stories', {
     version: import.meta.env.DEV ? "draft" : "published",
@@ -43,7 +40,7 @@ const { posts } = Astro.props;
           Hello.._  DAD
         </a>
       </div>
-      {posts !== undefined ? <BlogPostList blokdata={posts}/> : ''}
+      {posts.stories ? <BlogPostList blokdata={posts}/> : ''}
     </div>
   </section>
 </BaseLayout>
