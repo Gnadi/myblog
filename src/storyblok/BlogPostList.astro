@@ -1,0 +1,35 @@
+---
+import { storyblokEditable } from '@storyblok/astro'
+import EntriesOne from "../components/entries/EntriesOne.astro";
+
+const {blokdata} = Astro.props;
+
+const posts = blokdata.stories.map(story => {
+    return {
+        title: story.content.title,
+        date: new Date(story.published_at).toLocaleDateString("en-US", {dateStyle: "full"}),
+        description: story.content.description,
+        image: story.content.image,
+        author: story.content.author,
+        tags: story.content.tags,
+        slug: story.full_slug,
+    }
+})
+
+const { blok } = Astro.props
+---
+<ul class="grid grid-cols-1 mt-12 gap-1 gap-y-24 lg:grid-cols-3 sm:grid-cols-2" {...storyblokEditable(blok)}>
+    {posts.map(((post, index) => (
+            <EntriesOne
+                    url={post.slug}
+                    title={post.title}
+                    description={post.description}
+                    alt={post.title}
+                    pubDate={post.date.toString().slice(0, 10)}
+                    author={post.author}
+                    image={post.image?.filename}
+                    tags={post.tags}
+                    index={index}
+            />
+    )))}
+</ul>

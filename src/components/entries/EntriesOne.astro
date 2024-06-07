@@ -33,12 +33,15 @@ const { title, url, description, pubDate, author, image, tags , index} = Astro.p
         </div>
         <p class="mt-4 text-sm text-zinc-500 line-clamp-2">{description}</p>
 
-        <div class="mt-4 flex space-x-2">
+        <!--<div class="mt-4 flex space-x-2">
           {
             tags.map((tag: string) => (
               <span class="text-xs font-medium text-black">{tag}</span>
             ))
           }
+        </div> -->
+        <div class="mt-4 flex space-x-2">
+                <span class="text-xs font-medium text-black">{tags}</span>
         </div>
       </div>
     </article>

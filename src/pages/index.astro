@@ -1,17 +1,31 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import EntriesOne from "@/components/entries/EntriesOne.astro";
 import Hero from "@/components/landing/Hero.astro";
 import Cta from "@/components/global/Cta.astro";
 import { Icon } from 'astro-icon/components'
-const allPosts = await getCollection("posts");
-const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+import BlogPostList from "../storyblok/BlogPostList.astro";
+import {useStoryblokApi} from "@storyblok/astro";
 
-// Sort posts by date in descending order (newest first)
-const sortedPosts = allPosts.sort(
-  (a, b) => new Date(b.data.pubDate) - new Date(a.data.pubDate)
-);
+const storyblokApi = useStoryblokApi();
+const { data } = await storyblokApi.get('cdn/stories', {
+  version: import.meta.env.DEV ? "draft" : "published",
+  content_type: 'blogPost',
+})
+
+const posts = data.stories.map(story => {
+  return {
+    title: story.content.title,
+    date: new Date(story.published_at).toLocaleDateString("en-US", {dateStyle: "full"}),
+    description: story.content.description,
+    image: story.content.image,
+    author: story.content.author,
+    tags: story.content.tags,
+    slug: story.full_slug,
+  }
+})
+const tags = [...new Set(posts.map((post) => post.tags).flat())];
+
+
 ---
 
 <BaseLayout>
@@ -29,25 +43,7 @@ const sortedPosts = allPosts.sort(
           ))
         }
       </ol>
-      <ul
-        class="grid grid-cols-1 mt-12 gap-1 gap-y-24 lg:grid-cols-3 sm:grid-cols-2"
-      >
-        {
-          sortedPosts.map((post, index) => (
-            <EntriesOne
-              url={"/posts/" + post.slug}
-              title={post.data.title}
-              description={post.data.description}
-              alt={post.data.title}
-              pubDate={post.data.pubDate.toString().slice(0, 10)}
-              author={post.data.author}
-              image={post.data.image.url}
-              tags={post.data.tags}
-              index={index}
-            />
-          ))
-        }
-      </ul>
+      <BlogPostList blokdata={data}/>
     </div>
   </section>
   <div class="relative flex py-5 items-center px-8 md:px-12 mx-auto max-w-7xl py-12 lg:px-32">
