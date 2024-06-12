@@ -46,12 +46,12 @@ const tags = [...new Set(posts.map((post) => post.tags).flat())];
       <BlogPostList blokdata={data}/>
     </div>
   </section>
-  <div class="relative flex py-5 items-center px-8 md:px-12 mx-auto max-w-7xl py-12 lg:px-32">
+  {data.stories.length > 24 ? <div class="relative flex py-5 items-center px-8 md:px-12 mx-auto max-w-7xl py-12 lg:px-32">
     <div class="flex-grow bg-gray-100 border-t border-gray-400"></div>
-      <button class="flex items-center rounded-full border border-gray-300 bg-secondary-50 px-3 py-2 text-center text-sm font-medium text-gray-900 hover:bg-gray-100">
-        <Icon name="iconamoon:arrow-down-2"/> <span class="pl-1 pr-1">Mehr anzeigen</span></button>
+    <button class="flex items-center rounded-full border border-gray-300 bg-secondary-50 px-3 py-2 text-center text-sm font-medium text-gray-900 hover:bg-gray-100">
+      <Icon name="iconamoon:arrow-down-2"/> <span class="pl-1 pr-1">Mehr anzeigen</span></button>
     <div class="flex-grow border-t border-gray-400"></div>
-  </div>
+  </div> : ''}
   <Cta />
 </BaseLayout>
 
