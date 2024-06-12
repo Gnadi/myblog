@@ -48,7 +48,7 @@ const story = data.story;
                 loading="eager"
         />
           <div class="flex  flex-col md:flex-row mt-4 justify-between">
-              <p class="text-xs text-zinc-500 ">{story.content.pubDate.toString().slice(0, 10)} - Written by: {story.content.author}</p>
+              <p class="text-xs text-zinc-500 ">{story.content.pubDate?.toString().slice(0, 10)} - Written by: {story.content.author}</p>
               <div class="flex gap-3">
                   {
                       story.tag_list.map((tag: string) => (
