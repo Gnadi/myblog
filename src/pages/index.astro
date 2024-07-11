@@ -11,20 +11,16 @@ const { data } = await storyblokApi.get('cdn/stories', {
   version: import.meta.env.DEV ? "draft" : "published",
   content_type: 'blogPost',
 })
-
-const posts = data.stories.map(story => {
-  return {
-    title: story.content.title,
-    date: new Date(story.published_at).toLocaleDateString("en-US", {dateStyle: "full"}),
-    description: story.content.description,
-    image: story.content.image,
-    author: story.content.author,
-    tags: story.content.tags,
-    slug: story.full_slug,
-  }
-})
-const tags = [...new Set(posts.map((post) => post.tags).flat())];
-
+async function getTags() {
+  const {data} = await storyblokApi.get('cdn/tags', {
+    version: import.meta.env.DEV ? "draft" : "published",
+    content_type: 'blogPost',
+  });
+  return data;
+} const { tags } = await getTags()
+const uniqueTags = [
+  ...new Set(tags.map((tag) => tag.name).flat()),
+];
 
 ---
 
@@ -34,7 +30,7 @@ const tags = [...new Set(posts.map((post) => post.tags).flat())];
     <div class="px-8 md:px-12 mx-auto max-w-7xl py-12 lg:px-32">
       <ol role="list" class="flex flex-wrap gap-3">
         {
-          tags.map((tag) => (
+          uniqueTags.map((tag) => (
             <li class="inline-flex items-center uppercase mx-auto font-medium text-black">
               <a href={`/tags/${tag}`} class="max-w-sm leading-tight">
                 <span class="link link-underline link-underline-black text-black pb-2">{tag}</span>
