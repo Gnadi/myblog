@@ -41,7 +41,11 @@ const { title, url, description, pubDate, author, image, tags , index} = Astro.p
           }
         </div> -->
         <div class="mt-4 flex space-x-2">
-                <span class="text-xs font-medium text-black">{tags}</span>
+                <span class="text-xs font-medium text-black">{
+                  tags.map((tag: string) => (
+                      <span class="text-xs font-medium text-black pr-3">{tag}</span>
+                  ))
+                }</span>
         </div>
       </div>
     </article>

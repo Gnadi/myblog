@@ -5,31 +5,30 @@ import BlogPostList from "../../storyblok/BlogPostList.astro";
 
 export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi();
-  const { data } = await storyblokApi.get('cdn/stories', {
+  const { data } = await storyblokApi.get('cdn/tags', {
     version: import.meta.env.DEV ? "draft" : "published",
     content_type: 'blogPost',
   })
-  const uniqueTags = [
-    ...new Set(data.stories.map((story) => story.content.tags).flat()),
-  ];
-  return uniqueTags.map((tag) =>{
 
-    const filteredPosts = data.stories.filter(story => {
-      story.content.tags.includes(tag);
-    })
-    const sortedPosts = filteredPosts.sort(
-        (a, b) => new Date(b.story.published_at) - new Date(a.story.published_at)
-    )
-    return {
-      params: { tag },
-      props: { posts: sortedPosts },
-    };
-  });
+  const uniqueTags = [
+    ...new Set(data.tags.map((tag) => tag.name).flat()),
+  ];
+  return uniqueTags.map((tag) => {
+    return {params: {tag: tag}}
+  })
 }
 
 const { tag } = Astro.params;
-const { posts } = Astro.props;
+const storyblokApi = useStoryblokApi();
+console.log("DEBUGGY????", tag);
+const { data } = await storyblokApi.get(`cdn/stories`, {
+  version: import.meta.env.DEV ? "draft" : "published",
+  content_type: 'blogPost',
+})
 
+
+let filteredStories = data.stories.filter(story => story.tag_list.includes(tag));
+data.stories = filteredStories;
 ---
 
 <BaseLayout pageTitle={tag}>
@@ -37,10 +36,10 @@ const { posts } = Astro.props;
     <div class="px-8 py-12 md:px-12 mx-auto lg:pb-24 max-w-7xl lg:px-32 lg:pt-48">
       <div class="lg:text-center">
         <a href="/" class="text-4xl tracking-tight text-balance font-medium font-display text-black md:text-8xl">
-          Hello.._  DAD
+          Blogposts "{tag}"
         </a>
       </div>
-      {posts.stories ? <BlogPostList blokdata={posts}/> : ''}
+      {data.stories ? <BlogPostList blokdata={data}/> : ''}
     </div>
   </section>
 </BaseLayout>
