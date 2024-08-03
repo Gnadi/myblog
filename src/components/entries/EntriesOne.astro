@@ -5,49 +5,26 @@ const { title, url, description, pubDate, author, image, tags , index} = Astro.p
 ---
 
 <li>
-  <a href={url} title={title} class="group">
-    <article class="flex-1 h-full flex flex-col pr-3">
-      <div class="block w-full lg:col-span-2">
-        <Image
-            class="aspect-[2/3] object-cover bg-center h-full w-full rounded-tr-xl rounded-tl-xl"
+  <a href={url} title={title} class="group max-h-65 min-h-65">
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm max-w-md mx-auto min-h-full">
+      <Image
+          class="w-full h-auto rounded-t-lg"
           src={image}
           alt={title}
-          loading={index < 3 ? "eager" : "lazy"}
-          width="480"
-          height="620"
-        />
-      </div>
-      <div
-        class="flex flex-col items-start justify-between h-full flex-1 w-full p-4 bg-gray-100 rounded-bl-xl rounded-br-xl">
-        <div>
-          <div class="inline-flex space-x-1 items-center">
-            <p class="text-xs font-medium text-black">{author}</p>
-            <span aria-hidden="true">&middot;</span>
-            <div class="flex text-xs text-zinc-400">
-              <time datetime="2020-03-16">{pubDate}</time>
-            </div>
-          </div>
-          <p class="text-black mt-2 font-display text-xl text-pretty">
-            {title}
-          </p>
-        </div>
-        <p class="mt-4 text-sm text-zinc-500 line-clamp-2">{description}</p>
-
-        <!--<div class="mt-4 flex space-x-2">
-          {
-            tags.map((tag: string) => (
-              <span class="text-xs font-medium text-black">{tag}</span>
-            ))
-          }
-        </div> -->
-        <div class="mt-4 flex space-x-2">
-                <span class="text-xs font-medium text-black">{
-                  tags.map((tag: string) => (
-                      <span class="text-xs font-medium text-black pr-3">{tag}</span>
-                  ))
-                }</span>
+          loading={index < 2 ? "eager" : "lazy"}
+          width="600"
+          height="300"
+          style="aspect-ratio: 600 / 300; object-fit: cover;"
+      />
+      <div class="p-4">
+        <p class="text-xs font-semibold text-muted-foreground">{tags}</p>
+        <h2 class="mt-2 text-xl font-bold">
+          {description}
+        </h2>
+        <div class="flex text-xs text-zinc-400">
+          {pubDate}
         </div>
       </div>
-    </article>
+    </div>
   </a>
 </li>

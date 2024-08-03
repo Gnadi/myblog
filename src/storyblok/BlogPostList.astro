@@ -5,9 +5,10 @@ import EntriesOne from "../components/entries/EntriesOne.astro";
 const {blokdata} = Astro.props;
 
 const posts = blokdata.stories.map(story => {
+    console.log(story.published_at);
     return {
         title: story.content.title,
-        date: new Date(story.published_at).toLocaleDateString("en-US", {dateStyle: "full"}),
+        date: new Date(story.published_at).toLocaleDateString("de-AT", {dateStyle: "medium"}),
         description: story.content.description,
         image: story.content.image,
         author: story.content.author,
@@ -18,14 +19,14 @@ const posts = blokdata.stories.map(story => {
 
 const { blok } = Astro.props
 ---
-<ul class="grid grid-cols-1 mt-12 gap-1 gap-y-24 lg:grid-cols-3 sm:grid-cols-2" {...storyblokEditable(blok)}>
+<ul class="grid grid-cols-1 mt-12 gap-3 gap-y-24 lg:grid-cols-2 sm:grid-cols-2" {...storyblokEditable(blok)}>
     {posts.map(((post, index) => (
             <EntriesOne
                     url={post.slug}
                     title={post.title}
                     description={post.description}
                     alt={post.title}
-                    pubDate={post.date.toString().slice(0, 10)}
+                    pubDate={post.date}
                     author={post.author}
                     image={post.image?.filename}
                     tags={post.tags}
@@ -33,3 +34,34 @@ const { blok } = Astro.props
             />
     )))}
 </ul>
+
+<style>
+    .nr-scroll-animation {
+        --nr-animation-transform-x: 0;
+        --nr-animation-transform-y: 0;
+        --nr-animation-transform-scale: 1;
+        --nr-animation-duration: 800ms
+    }
+
+    .nr-scroll-animation--off {
+        opacity: 0 !important
+    }
+
+    .nr-scroll-animation--on {
+        animation-name: nr-scroll-animation;
+        animation-duration: var(--nr-animation-duration);
+        animation-timing-function: cubic-bezier(0.4, 0, 0.25, 1)
+    }
+
+    @keyframes nr-scroll-animation {
+        from {
+            opacity: 0;
+            transform: translate(var(--nr-animation-transform-x), var(--nr-animation-transform-y)) scale(var(--nr-animation-transform-scale))
+        }
+
+        to {
+            opacity: 1;
+            transform: translate(0, 0) scale(1)
+        }
+    }
+</style>
