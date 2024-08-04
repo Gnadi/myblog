@@ -59,7 +59,7 @@ const story = data.story;
               <div class="flex gap-3">
                   {
                       story.tag_list.map((tag: string) => (
-                              <span class="inline-flex items-center uppercase    hover:text-blue-500   text-xs font-medium text-black">
+                              <span class="inline-flex items-center uppercase    hover:text-blue-500   text-xs font-medium text-black dark:text-white">
                     <a href={`/tags/${tag}`}>{tag}</a>
                   </span>
                       ))
