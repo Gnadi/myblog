@@ -1,20 +1,53 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import BlogPostList from "../../storyblok/BlogPostList.astro";
 import {useStoryblokApi} from "@storyblok/astro";
+import ThemeToggle from "../../components/ThemeToggle.astro";
+import Hero from "../../components/landing/Hero.astro";
 
 const storyblokApi = useStoryblokApi();
-const { data } = await storyblokApi.get('cdn/stories', {
+const { data } = await storyblokApi.get('cdn/tags', {
   version: import.meta.env.DEV ? "draft" : "published",
   content_type: 'blogPost',
 })
+const uniqueTags = [
+  ...new Set(data.tags.map((tag) => tag.name).flat()),
+];
 ---
 
 <BaseLayout pageTitle="Tags">
+  <ThemeToggle/>
+  <Hero />
   <section>
-    <div class="px-8 md:px-12 mx-auto max-w-7xl py-12 lg:px-32">
-      <BlogPostList blokdata={data}/>
-    </div>
+    <ol role="list" class="flex flex-wrap gap-3">
+      {
+        uniqueTags.map((tag) => (
+            <li class="inline-flex items-center uppercase mx-auto font-medium">
+              <a href={`/tags/${tag}`} class="max-w-sm leading-tight">
+                <span class="link link-underline light:link-underline-black text-black dark:text-white pb-2">{tag}</span>
+              </a>
+            </li>
+        ))
+      }
+    </ol>
   </section>
 </BaseLayout>
+
+<style>
+
+  .link-underline {
+    border-bottom-width: 0;
+    background-image: linear-gradient(transparent, transparent), linear-gradient(#fff, #fff);
+    background-size: 0 3px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size .5s ease-in-out;
+  }
+  .link-underline-black {
+    background-image: linear-gradient(transparent, transparent), linear-gradient(#050505, #050505)
+  }
+  .link-underline:hover {
+    background-size: 100% 3px;
+    background-position: 0 100%
+  }
+</style>

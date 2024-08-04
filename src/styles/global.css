@@ -8,8 +8,17 @@
 }
 
 .prose-styles {
-  @apply text-sm prose text-neutral-600 dark:text-neutral-600 prose-a:font-normal prose-a:text-blue-400 hover:prose-a:text-black prose-h1:text-black prose-img:border-2 prose-img:bg-neutral-50 dark:prose-img:bg-neutral-800 prose-img:border-transparent dark:prose-img:invert prose-h2:text-black prose-h2:font-semibold prose-p:text-sm prose-pre:font-mono max-w-none prose-pre:rounded-none;
+  @apply text-sm prose text-neutral-600 prose-a:font-normal prose-a:text-blue-400 hover:prose-a:text-black prose-h1:text-black prose-img:border-2 prose-img:bg-neutral-50 prose-img:border-transparent prose-img:invert prose-h2:text-black prose-h2:font-semibold prose-p:text-sm prose-pre:font-mono max-w-none prose-pre:rounded-none;
+
+  /* Dark Mode Styles */
+  @apply dark:text-neutral-400;
+  @apply dark:prose-a:text-blue-400 dark:hover:prose-a:text-white;
+  @apply dark:prose-h1:text-white;
+  @apply dark:prose-img:bg-neutral-800 dark:prose-img:border-neutral-700;
+  @apply dark:prose-h2:text-white;
+  @apply dark:prose-pre:bg-neutral-900;
 }
+
 
 /* Stile für Inline-Code */
 .prose-styles code {

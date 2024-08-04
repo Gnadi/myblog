@@ -6,6 +6,7 @@ import { Icon } from 'astro-icon/components'
 import BlogPostList from "../storyblok/BlogPostList.astro";
 import {useStoryblokApi} from "@storyblok/astro";
 
+
 const storyblokApi = useStoryblokApi();
 const { data } = await storyblokApi.get('cdn/stories', {
   version: import.meta.env.DEV ? "draft" : "published",
@@ -23,17 +24,32 @@ const uniqueTags = [
 ];
 
 ---
-
+<script>
+  (function() {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedTheme = localStorage.getItem('theme');
+      if (storedTheme) {
+        document.documentElement.classList.add(storedTheme);
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) {
+          document.documentElement.classList.add('dark');
+        }
+      }
+    }
+  })();
+</script>
 <BaseLayout>
+
   <Hero />
   <section>
     <div class="px-8 md:px-12 mx-auto max-w-7xl py-12 lg:px-32">
       <ol role="list" class="flex flex-wrap gap-3">
         {
           uniqueTags.map((tag) => (
-            <li class="inline-flex items-center uppercase mx-auto font-medium text-black">
+            <li class="inline-flex items-center uppercase mx-auto font-medium">
               <a href={`/tags/${tag}`} class="max-w-sm leading-tight">
-                <span class="link link-underline link-underline-black text-black pb-2">{tag}</span>
+                <span class="link link-underline dark:link-underline-white text-black dark:text-white pb-2">{tag}</span>
               </a>
             </li>
           ))
@@ -42,9 +58,9 @@ const uniqueTags = [
       <BlogPostList blokdata={data}/>
     </div>
   </section>
-  {data.stories.length > 24 ? <div class="relative flex py-5 items-center px-8 md:px-12 mx-auto max-w-7xl py-12 lg:px-32">
+  {data.stories.length > 24 ? <div class="relative flex py-5 items-center px-8 md:px-12 mx-auto max-w-7xl lg:px-32">
     <div class="flex-grow bg-gray-100 border-t border-gray-400"></div>
-    <button class="flex items-center rounded-full border border-gray-300 bg-secondary-50 px-3 py-2 text-center text-sm font-medium text-gray-900 hover:bg-gray-100">
+    <button class="flex items-center rounded-full border border-gray-300 bg-secondary-50 px-3 py-2 text-center text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-black">
       <Icon name="iconamoon:arrow-down-2"/> <span class="pl-1 pr-1">Mehr anzeigen</span></button>
     <div class="flex-grow border-t border-gray-400"></div>
   </div> : ''}
@@ -55,14 +71,14 @@ const uniqueTags = [
 
   .link-underline {
     border-bottom-width: 0;
-    background-image: linear-gradient(transparent, transparent), linear-gradient(#fff, #fff);
+    background-image: linear-gradient(transparent, transparent), linear-gradient(#050505, #050505);
     background-size: 0 3px;
     background-position: 0 100%;
     background-repeat: no-repeat;
     transition: background-size .5s ease-in-out;
   }
-  .link-underline-black {
-    background-image: linear-gradient(transparent, transparent), linear-gradient(#050505, #050505)
+  .link-underline-white {
+    background-image: linear-gradient(transparent, transparent), linear-gradient(#fff, #fff);
   }
   .link-underline:hover {
     background-size: 100% 3px;

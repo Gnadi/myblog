@@ -2,6 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import {useStoryblokApi} from "@storyblok/astro";
 import BlogPostList from "../../storyblok/BlogPostList.astro";
+import ThemeToggle from "../../components/ThemeToggle.astro";
 
 export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi();
@@ -20,7 +21,6 @@ export async function getStaticPaths() {
 
 const { tag } = Astro.params;
 const storyblokApi = useStoryblokApi();
-console.log("DEBUGGY????", tag);
 const { data } = await storyblokApi.get(`cdn/stories`, {
   version: import.meta.env.DEV ? "draft" : "published",
   content_type: 'blogPost',
@@ -32,10 +32,15 @@ data.stories = filteredStories;
 ---
 
 <BaseLayout pageTitle={tag}>
+  <div class="relative w-full">
+    <div class="absolute right-10 top-10 hidden lg:block">
+      <ThemeToggle />
+    </div>
+  </div>
   <section>
     <div class="px-8 py-12 md:px-12 mx-auto lg:pb-24 max-w-7xl lg:px-32 lg:pt-48">
       <div class="lg:text-center">
-        <a href="/" class="text-4xl tracking-tight text-balance font-medium font-display text-black md:text-8xl">
+        <a href="/" class="text-4xl tracking-tight text-balance font-medium font-display text-black dark:text-white md:text-8xl">
           Blogposts "{tag}"
         </a>
       </div>

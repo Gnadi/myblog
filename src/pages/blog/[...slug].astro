@@ -3,6 +3,7 @@ import {useStoryblokApi} from '@storyblok/astro'
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro'
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {Image} from 'astro:assets';
+import ThemeToggle from "../../components/ThemeToggle.astro";
 
 
 export async function getStaticPaths() {
@@ -38,10 +39,15 @@ const story = data.story;
 </head>
 <body>
 <BaseLayout>
-    <div class="px-8 py-12 md:px-12 mx-auto lg:pb-24 max-w-7xl lg:px-32   lg:pt-32">
+    <div class="relative w-full">
+        <div class="absolute right-10 top-10 hidden lg:block">
+            <ThemeToggle />
+        </div>
+    </div>
+    <div class="px-8 py-12 md:px-12 mx-auto lg:pb-24 max-w-7xl lg:px-32 lg:pt-32">
       <div class="lg:text-center">
         <Image
-                class="lg:h-72 w-full  object-cover object-center"
+                class="lg:h-72 w-full  object-cover object-center rounded-xl"
                 src={story.content.image.filename}
                 alt="bild"
                 width="480"
