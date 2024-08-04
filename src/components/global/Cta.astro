@@ -1,3 +1,17 @@
+---
+import { db, Contact } from 'astro:db';
+
+if (Astro.request.method === 'POST') {
+    // parse form data
+  const formData = await Astro.request.formData();
+    const contact = formData.get('contact');
+    if (typeof contact === 'string') {
+    // insert form data into the Contact table
+    await db.insert(Contact).values({ contact });
+    }
+}
+---
+
 <section>
   <div
     class="px-8 py-12 md:px-12 mx-auto lg:pb-24 max-w-7xl lg:px-32"
@@ -8,20 +22,20 @@
       >
         Stay tuned!
       </h2>
-      <form action="" class="mt-12">
+      <form method="POST" class="mt-12">
         <div class="flex w-full flex-col gap-1 sm:flex-row max-w-md mx-auto">
-          <input id="mail"
+          <input id="contact"
             name="email"
             type="email"
             class="block w-full rounded-full border border-zinc-900 px-4 py-2  text-sm text-white font-medium placeholder-zinc-400 focus:border-zinc-800 focus:outline-none focus:ring-2 h-10 lg:px-6 focus:ring-zinc-700/50 bg-zinc-800 disabled:opacity-50"
             placeholder="Enter your email..."
-            required=""
-          /><button
-
-            type="button"
+            required
+          />
+          <button
+            type="submit"
             class="items-center inline-flex border duration-300 focus:ring-2 h-10 focus:ring-offset-2 justify-center px-4 py-2 rounded-full text-sm bg-white border-transparent focus:ring-black hover:bg-white/10  hover:text-white   ring-1 ring-transparent text-black"
             >
-          <label for="mail">Subscribe</label>
+          <label for="contact">Subscribe</label>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
@@ -32,8 +46,8 @@
                 fill-rule="evenodd"
                 d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z"
                 clip-rule="evenodd"></path></svg
-            ></button
-          >
+            >
+          </button>
         </div>
       </form>
     </div>
