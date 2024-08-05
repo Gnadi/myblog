@@ -5,10 +5,8 @@ import mdx from "@astrojs/mdx";
 import { loadEnv } from 'vite';
 import storyblok from '@storyblok/astro';
 import icon from "astro-icon";
-import db from "@astrojs/db";
-import vercel from "@astrojs/vercel/serverless";
-const env = loadEnv("", process.cwd(), 'STORYBLOK');
 
+const env = loadEnv("", process.cwd(), 'STORYBLOK');
 
 // https://astro.build/config
 export default defineConfig({
@@ -29,16 +27,10 @@ export default defineConfig({
     components: {
       blogPost: 'storyblok/BlogPost',
       blogPostList: 'storyblok/BlogPostList',
-      page: 'storyblok/Page'
+      page: 'storyblok/Page',
     },
     apiOptions: {
-      region: 'eu'
-    }
-  }), db()],
-  output: "server",
-  adapter: vercel({
-    webAnalytics: {
-      enabled: true,
-    }
-  })
+      region: 'eu',
+    },
+  })]
 });
