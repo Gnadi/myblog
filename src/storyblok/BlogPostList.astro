@@ -5,7 +5,6 @@ import EntriesOne from "../components/entries/EntriesOne.astro";
 const {blokdata} = Astro.props;
 
 const posts = blokdata.stories.map(story => {
-    console.log(story.published_at);
     return {
         title: story.content.title,
         date: new Date(story.published_at).toLocaleDateString("de-AT", {dateStyle: "medium"}),
