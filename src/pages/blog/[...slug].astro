@@ -4,7 +4,8 @@ import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro'
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {Image} from 'astro:assets';
 import ThemeToggle from "../../components/ThemeToggle.astro";
-
+import hljs from 'highlight.js';
+import 'highlight.js/styles/default.css';
 
 export async function getStaticPaths() {
     const sbApi = useStoryblokApi();
@@ -31,13 +32,22 @@ const {data} = await sbApi.get(`cdn/stories/blog/${slug}`, {
 
 const story = data.story;
 ---
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Storyblok & Astro</title>
 </head>
 <body>
+<script>
+    import hljs from 'highlight.js';
+    import 'highlight.js/styles/github.css'; // Verwende das GitHub-Theme
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightElement(block);
+        });
+    });
+</script>
+
 <BaseLayout>
     <div class="relative w-full">
         <div class="absolute right-10 top-10 hidden lg:block">
@@ -75,7 +85,6 @@ const story = data.story;
         </div>
     </div>
 </BaseLayout>
-
 
 <style>
 
