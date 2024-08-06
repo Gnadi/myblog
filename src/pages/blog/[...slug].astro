@@ -4,8 +4,6 @@ import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro'
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {Image} from 'astro:assets';
 import ThemeToggle from "../../components/ThemeToggle.astro";
-import hljs from 'highlight.js';
-import 'highlight.js/styles/default.css';
 
 export async function getStaticPaths() {
     const sbApi = useStoryblokApi();
@@ -50,7 +48,7 @@ const story = data.story;
 
 <BaseLayout>
     <div class="relative w-full">
-        <div class="absolute right-10 top-10 hidden lg:block">
+        <div class="absolute right-5 top-5 lg:right-10 lg:top-10">
             <ThemeToggle />
         </div>
     </div>
