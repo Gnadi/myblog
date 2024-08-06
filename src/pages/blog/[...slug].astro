@@ -40,14 +40,14 @@ const story = data.story;
     import hljs from 'highlight.js';
     import 'highlight.js/styles/github.css'; // Verwende das GitHub-Theme
     document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('pre code').forEach((block) => {
+        document.querySelectorAll('pre code').forEach((block:HTMLElement) => {
             hljs.highlightElement(block);
         });
     });
 </script>
 
 <BaseLayout>
-    <div class="relative w-full">
+    <div class="relative w-full xs:hidden">
         <div class="absolute right-5 top-5 lg:right-10 lg:top-10">
             <ThemeToggle />
         </div>
@@ -80,6 +80,9 @@ const story = data.story;
             <div class="prose-styles">
                 <StoryblokComponent blok={story.content}/>
             </div>
+        </div>
+        <div class="justify-center pt-4 w-full hidden xs:flex">
+                <ThemeToggle />
         </div>
     </div>
 </BaseLayout>

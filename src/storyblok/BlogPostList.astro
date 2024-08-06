@@ -10,7 +10,6 @@ const posts = blokdata.stories.map(story => {
         date: new Date(story.published_at).toLocaleDateString("de-AT", {dateStyle: "medium"}),
         description: story.content.description,
         image: story.content.image,
-        author: story.content.author,
         tags: story.tag_list ? story.tag_list : "",
         slug: story.full_slug,
     }
@@ -26,7 +25,6 @@ const { blok } = Astro.props
                     description={post.description}
                     alt={post.title}
                     pubDate={post.date}
-                    author={post.author}
                     image={post.image?.filename}
                     tags={post.tags}
                     index={index}
