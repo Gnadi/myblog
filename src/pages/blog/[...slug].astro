@@ -47,7 +47,7 @@ const story = data.story;
 </script>
 
 <BaseLayout>
-    <div class="relative w-full xs:hidden">
+    <div class="relative w-full invisible lg:visible">
         <div class="absolute right-5 top-5 lg:right-10 lg:top-10">
             <ThemeToggle />
         </div>
@@ -81,7 +81,7 @@ const story = data.story;
                 <StoryblokComponent blok={story.content}/>
             </div>
         </div>
-        <div class="justify-center pt-4 w-full hidden xs:flex">
+        <div class="justify-center pt-4 w-full hidden max-lg:flex">
                 <ThemeToggle />
         </div>
     </div>
