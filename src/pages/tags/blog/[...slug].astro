@@ -1,0 +1,111 @@
+---
+import {useStoryblokApi} from '@storyblok/astro'
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro'
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import {Image} from 'astro:assets';
+import ThemeToggle from "../../../components/ThemeToggle.astro";
+
+export async function getStaticPaths() {
+    const sbApi = useStoryblokApi();
+
+    const {data} = await sbApi.get("cdn/stories", {
+        content_type: "blogPost",
+        version: import.meta.env.DEV ? "draft" : "published",
+    });
+
+    const stories = Object.values(data.stories);
+
+    return stories.map((story) => {
+        return {
+            params: {slug: story.slug},
+        };
+    });
+}
+
+const sbApi = useStoryblokApi();
+const {slug} = Astro.params;
+const {data} = await sbApi.get(`cdn/stories/blog/${slug}`, {
+    version: import.meta.env.DEV ? "draft" : "published",
+});
+
+const story = data.story;
+---
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Storyblok & Astro</title>
+</head>
+<body>
+<script>
+    import hljs from 'highlight.js';
+    import 'highlight.js/styles/github.css'; // Verwende das GitHub-Theme
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach((block:HTMLElement) => {
+            hljs.highlightElement(block);
+        });
+    });
+</script>
+
+<BaseLayout>
+    <div class="relative w-full invisible lg:visible">
+        <div class="absolute right-5 top-5 lg:right-10 lg:top-10">
+            <ThemeToggle />
+        </div>
+    </div>
+    <div class="px-8 py-12 md:px-12 mx-auto lg:pb-24 max-w-7xl lg:px-32 lg:pt-32">
+      <div class="lg:text-center">
+        <Image
+                class="lg:h-72 w-full  object-cover object-center rounded-xl"
+                src={story.content.image.filename}
+                alt="bild"
+                width="480"
+                height="620"
+                loading="eager"
+        />
+          <div class="flex  flex-col md:flex-row mt-4 justify-between">
+              <p class="text-xs text-zinc-500 ">{story.content.pubDate?.toString().slice(0, 10)} - Written by: {story.content.author}</p>
+              <div class="flex gap-3">
+                  {
+                      story.tag_list.map((tag: string) => (
+                              <span class="inline-flex items-center uppercase    hover:text-blue-500   text-xs font-medium text-black dark:text-white">
+                    <a href={`/tags/${tag}`}>{tag}</a>
+                  </span>
+                      ))
+                  }
+              </div>
+          </div>
+      </div>
+
+        <div class="mt-12 max-w-2xl mx-auto">
+            <div class="prose-styles">
+                <StoryblokComponent blok={story.content}/>
+            </div>
+        </div>
+        <div class="justify-center pt-4 w-full hidden max-lg:flex">
+                <ThemeToggle />
+        </div>
+    </div>
+</BaseLayout>
+
+<style>
+
+    .link-underline {
+        border-bottom-width: 0;
+        background-image: linear-gradient(transparent, transparent), linear-gradient(#fff, #fff);
+        background-size: 0 3px;
+        background-position: 0 100%;
+        background-repeat: no-repeat;
+        transition: background-size .5s ease-in-out;
+    }
+
+    .link-underline-black {
+        background-image: linear-gradient(transparent, transparent), linear-gradient(#050505, #050505)
+    }
+
+    .link-underline:hover {
+        background-size: 100% 3px;
+        background-position: 0 100%
+    }
+</style>
+</body>
+</html>
