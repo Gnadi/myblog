@@ -1,35 +1,32 @@
-<script>
-    const buttons = document.querySelectorAll('button.toggleButton')
-    // Handle clicks on each button.
-    buttons.forEach((button) => {
-        button.addEventListener('click', () => {
-            toggleDarkMode();
-        });
-    });
-    function toggleDarkMode() {
-        const htmlElement = document.documentElement;
-        const isDarkMode = htmlElement.classList.toggle('dark');
-        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-    }
+<button id="theme-toggle">
+    <!-- https://lucide.dev/icons/moon -->
+    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    <!-- https://lucide.dev/icons/sun -->
+    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+</button>
 
-    if (typeof window !== 'undefined') {
-        const storedTheme = localStorage.getItem('theme');
-        if (storedTheme) {
-            document.documentElement.classList.add(storedTheme);
-        } else {
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (prefersDark) {
-                document.documentElement.classList.add('dark');
-            }
-        }
+<script>
+    import { handleToggleClick } from 'astro-theme-toggle'
+    const addListener = () => {
+        document
+            .getElementById('theme-toggle')
+            ?.addEventListener('click', handleToggleClick)
     }
+    addListener()
+    document.addEventListener('astro:after-swap', addListener)
 </script>
 
-<button class="toggleButton w-12 h-12 rounded-full border-2 border-black dark:border-white">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="w-full h-6 dark:hidden" viewBox="0 0 32 32">
-        <path fill="currentColor" fill-rule="evenodd" d="M16 21.42A5.426 5.426 0 0 1 10.581 16a5.425 5.425 0 0 1 5.42-5.42A5.425 5.425 0 0 1 21.418 16 5.426 5.426 0 0 1 16 21.42M16 8.64c-4.058 0-7.358 3.3-7.358 7.358s3.3 7.358 7.358 7.358 7.358-3.3 7.358-7.358-3.3-7.358-7.358-7.358M16 7.084a.97.97 0 0 0 .97-.97V3.345a.97.97 0 0 0-1.94 0v2.77c0 .534.434.97.97.97M6.116 15.03h-2.77a.97.97 0 0 0 0 1.939h2.77a.969.969 0 1 0 0-1.94M16 24.915a.97.97 0 0 0-.97.97v2.769a.97.97 0 0 0 1.94 0v-2.77a.97.97 0 0 0-.97-.97M28.654 15.03h-2.77a.97.97 0 0 0 0 1.939h2.77a.97.97 0 1 0 0-1.94M22.99 9.98a.97.97 0 0 0 .686-.284l1.028-1.028a.97.97 0 0 0 0-1.372.97.97 0 0 0-1.372 0l-1.028 1.029a.97.97 0 0 0 .686 1.655M8.325 9.696a.967.967 0 0 0 1.371 0 .97.97 0 0 0 0-1.371L8.668 7.297a.97.97 0 0 0-1.37 1.37zM8.325 22.304l-1.028 1.027a.969.969 0 1 0 1.371 1.371l1.028-1.027a.969.969 0 1 0-1.37-1.37M23.675 22.304a.97.97 0 1 0-1.37 1.371l1.027 1.027a.964.964 0 0 0 1.371 0 .97.97 0 0 0 0-1.37z" clip-rule="evenodd"/>
-    </svg>
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="hidden w-full h-6 text-white dark:block" viewBox="0 0 32 32">
-        <path fill="currentColor" fill-rule="evenodd" d="M14.228 7.944c-3.71.885-6.47 4.161-6.47 8.055 0 4.573 3.804 8.293 8.479 8.293 2.995 0 5.697-1.522 7.214-3.934q-.26.014-.522.014c-5.146 0-9.334-4.095-9.334-9.128 0-1.14.216-2.255.633-3.3m2.009 18.555C10.317 26.5 5.5 21.79 5.5 16c0-5.788 4.817-10.5 10.737-10.5.423 0 .813.23 1.007.599.194.366.165.809-.08 1.146a6.76 6.76 0 0 0-1.31 4c0 3.816 3.173 6.92 7.075 6.92.72 0 1.428-.106 2.107-.31a1.14 1.14 0 0 1 1.138.276c.297.295.402.726.27 1.117-1.442 4.338-5.544 7.252-10.207 7.252" clip-rule="evenodd"/>
-    </svg>
-</button>
+<style is:global>
+    .icon-sun {
+        display: block;
+    }
+    .icon-moon {
+        display: none;
+    }
+    .dark .icon-sun {
+        display: none;
+    }
+    .dark .icon-moon {
+        display: block;
+    }
+</style>

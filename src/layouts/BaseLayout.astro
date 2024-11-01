@@ -1,11 +1,13 @@
 ---
 import BaseHead from "@/components/BaseHead.astro";
 import Footer from "@/components/global/Footer.astro";
+import { ThemeScript } from 'astro-theme-toggle';
 ---
 
 <html lang="en">
   <head>
     <BaseHead />
+    <ThemeScript />
   </head>
   <body class="bg-white dark:bg-gray-900 flex flex-col min-h-screen">
     <main class="flex-grow"><slot /></main>
