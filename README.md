@@ -1,44 +1,13 @@
-# Astro & Tailwind CSS Starter Kit by lexingtonthemes.com
+# MyBlog
 
-## Template Integrations
-- @astrojs/tailwind - https://docs.astro.build/en/guides/integrations-guide/tailwind/
-- @astrojs/sitemap - https://docs.astro.build/en/guides/integrations-guide/sitemap/
-- @astrojs/mdx - https://docs.astro.build/en/guides/markdown-content/
-- @astrojs/rss - https://docs.astro.build/en/guides/rss/
-- Astrolib SEO - https://github.com/onwidget/astrolib/tree/main/packages/seo
+Welcome to **MyBlog**! This is a personal blog built using [Astro](https://astro.build) and [Tailwind](https://tailwindcss.com/),a simple, blog-aware static site generator.\
+It's designed to showcase my thoughts, projects, and ideas in a clean and minimalist design. You can view the blog at [gnadlinger.me](https://gnadlinger.me).
+For writing my blog posts I use the Headless CMS [Storyblok](https://storyblok.com/)
 
-## Template Structure
+## Features
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `npm install`          | Installs dependencies                            |
-| `npm run dev`          | Starts local dev server at `localhost:3000`      |
-| `npm run build`        | Build your production site to `./dist/`          |
-| `npm run preview`      | Preview your build locally, before deploying     |
-| `npm run astro ...`    | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro --help` | Get help using the Astro CLI                     |
-
-## Want to learn more?
-
-Feel free to check Astros [documentation](https://docs.astro.build)
+- **Clean and Minimalist Design**: A simple design focused on readability and content.
+- **Storyblok Support**: Write your posts in Markdown for easy formatting and styling.
+- **Customizable**: You can customize the layout, colors, and design to fit your personal style.
+- **Responsive**: The site works well on both mobile and desktop devices.
+- **Light and Dark Theme**: Perfect vision on every system
