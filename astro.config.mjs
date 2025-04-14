@@ -3,7 +3,7 @@ import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
 import mdx from "@astrojs/mdx";
 import { loadEnv } from 'vite';
-import storyblok from '@storyblok/astro';
+import {storyblok} from '@storyblok/astro';
 import icon from "astro-icon";
 
 const env = loadEnv("", process.cwd(), 'STORYBLOK');
