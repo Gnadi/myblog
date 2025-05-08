@@ -4,6 +4,7 @@ import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro'
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {Image} from 'astro:assets';
 import ThemeToggle from "../../components/ThemeToggle.astro";
+import {renderStoryblokContent} from "../../storyblok/renderStoryblokContent";
 
 export async function getStaticPaths() {
     const sbApi = useStoryblokApi();
