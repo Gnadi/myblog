@@ -29,6 +29,7 @@ const {data} = await sbApi.get(`cdn/stories/blog/${slug}`, {
 });
 
 const story = data.story;
+const content = renderStoryblokContent(story.content.body);
 ---
 <html lang="en">
 <head>
@@ -78,7 +79,7 @@ const story = data.story;
 
         <div class="mt-12 max-w-2xl mx-auto">
             <div class="prose-styles">
-                <StoryblokComponent blok={story.content}/>
+                <StoryblokComponent blok={content}/>
             </div>
         </div>
         <div class="justify-center pt-4 w-full hidden max-lg:flex">
