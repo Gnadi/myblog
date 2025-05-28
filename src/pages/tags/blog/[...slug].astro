@@ -8,8 +8,7 @@ import ThemeToggle from "../../../components/ThemeToggle.astro";
 export async function getStaticPaths() {
     const sbApi = useStoryblokApi();
 
-    const {data} = await sbApi.get("cdn/stories", {
-        content_type: "blogPost",
+    const {data} = await sbApi.get("cdn/stories/blog", {
         version: import.meta.env.DEV ? "draft" : "published",
     });
 
