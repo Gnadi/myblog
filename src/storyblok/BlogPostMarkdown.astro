@@ -1,0 +1,16 @@
+---
+import { storyblokEditable, renderRichText } from '@storyblok/astro'
+import {marked} from "marked";
+const { blok } = Astro.props
+
+const parsedContent = marked(blok.content || '') // Convert Markdown to HTML
+---
+<article {...storyblokEditable(blok)}>
+    <h1 class="lg:text-center text-4xl tracking-tight text-balance font-light font-display text-black md:text-6xl">
+        {blok.title}
+    </h1>
+    <p class="lg:text-center max-w-2xl mt-3 mx-auto text-zinc-500">
+        <em>{blok.description}</em>
+    </p>
+    <div class="prose prose-zinc mx-auto" set:html={parsedContent} />
+</article>

@@ -6,7 +6,6 @@ import Hero from "../../components/landing/Hero.astro";
 const storyblokApi = useStoryblokApi();
 const { data } = await storyblokApi.get('cdn/tags', {
   version: import.meta.env.DEV ? "draft" : "published",
-  content_type: 'blogPost',
 })
 const uniqueTags = [
   ...new Set(data.tags.map((tag) => tag.name).flat()),
