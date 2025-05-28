@@ -8,7 +8,6 @@ export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi();
   const { data } = await storyblokApi.get('cdn/tags', {
     version: import.meta.env.DEV ? "draft" : "published",
-    content_type: 'blogPost',
   })
 
   const uniqueTags = [
@@ -23,7 +22,6 @@ const { tag } = Astro.params;
 const storyblokApi = useStoryblokApi();
 const { data } = await storyblokApi.get(`cdn/stories`, {
   version: import.meta.env.DEV ? "draft" : "published",
-  content_type: 'blogPost',
 })
 
 
