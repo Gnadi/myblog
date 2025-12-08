@@ -9,7 +9,7 @@ const { title, url, description, pubDate, image, tags , index} = Astro.props;
     <div class="rounded-lg border bg-card text-card-foreground shadow-sm max-w-md mx-auto min-h-full dark:border-slate-600">
       <Image
           class="w-full h-auto rounded-t-lg"
-          src={image}
+          src={`${image}/m/1200x800/filters:format(webp)`}
           alt={title}
           loading={index < 2 ? "eager" : "lazy"}
           width="600"
