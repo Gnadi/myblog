@@ -16,6 +16,7 @@
   @apply dark:prose-h1:text-white;
   @apply dark:prose-h2:text-white;
   @apply dark:prose-h3:text-white;
+  @apply dark:prose-strong:text-white;
   @apply dark:prose-pre:bg-neutral-900;
 }
 
