@@ -13,13 +13,11 @@ import Analytics from '@vercel/analytics/astro';
     <script is:inline>
       window.addEventListener('pageshow', function(event) {
         if (event.persisted) {
-          var stored = localStorage.getItem('theme');
-          document.documentElement.classList.remove('dark', 'light');
-          if (stored) {
-            document.documentElement.classList.add(stored);
-          } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.classList.add('dark');
-          }
+          var stored = localStorage.getItem('theme-toggle');
+          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = (stored === 'dark' || stored === 'light') ? stored : (systemDark ? 'dark' : 'light');
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+          document.documentElement.style.colorScheme = theme;
         }
       });
     </script>
