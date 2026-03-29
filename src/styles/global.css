@@ -18,6 +18,8 @@
   @apply dark:prose-h3:text-white;
   @apply dark:prose-strong:text-white;
   @apply dark:prose-pre:bg-neutral-900;
+  @apply dark:prose-blockquote:text-neutral-300;
+  @apply dark:prose-blockquote:border-neutral-500;
 }
 
 
