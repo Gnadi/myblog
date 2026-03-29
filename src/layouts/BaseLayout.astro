@@ -10,6 +10,17 @@ import Analytics from '@vercel/analytics/astro';
     <BaseHead />
     <ThemeScript />
     <Analytics />
+    <script is:inline>
+      window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+          var stored = localStorage.getItem('theme-toggle');
+          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = (stored === 'dark' || stored === 'light') ? stored : (systemDark ? 'dark' : 'light');
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+          document.documentElement.style.colorScheme = theme;
+        }
+      });
+    </script>
   </head>
   <body class="bg-white dark:bg-gray-900 flex flex-col min-h-screen">
     <main class="flex-grow"><slot /></main>
