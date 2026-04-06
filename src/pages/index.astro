@@ -47,7 +47,7 @@ const uniqueTags = [
           uniqueTags.map((tag) => (
             <li class="inline-flex items-center uppercase mx-auto font-medium">
               <a href={`/tags/${tag}`} class="max-w-sm leading-tight">
-                <span class="link link-underline dark:link-underline-white text-black dark:text-white pb-2">{tag}</span>
+                <span class="link link-underline text-black dark:text-white pb-2">{tag}</span>
               </a>
             </li>
           ))
@@ -75,7 +75,7 @@ const uniqueTags = [
     background-repeat: no-repeat;
     transition: background-size .5s ease-in-out;
   }
-  .link-underline-white {
+  :global(.dark) .link-underline {
     background-image: linear-gradient(transparent, transparent), linear-gradient(#fff, #fff);
   }
   .link-underline:hover {
