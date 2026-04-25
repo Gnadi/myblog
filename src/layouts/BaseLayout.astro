@@ -28,6 +28,13 @@ import Analytics from '@vercel/analytics/astro';
         document.addEventListener('astro:after-swap', function () {
           applyTheme(getTheme());
         });
+        // Enable color transitions only after first paint to avoid an
+        // initial fade from default → stored theme.
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            document.documentElement.classList.add('theme-ready');
+          });
+        });
       })();
     </script>
   </head>

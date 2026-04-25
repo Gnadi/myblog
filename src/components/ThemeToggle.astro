@@ -6,20 +6,11 @@
 </button>
 
 <script>
-    const apply = (theme: 'dark' | 'light') => {
-        document.documentElement.classList.toggle('dark', theme === 'dark')
-        document.documentElement.style.colorScheme = theme
-    }
     const onToggle = () => {
-        const next: 'dark' | 'light' = document.documentElement.classList.contains('dark') ? 'light' : 'dark'
+        const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark'
+        document.documentElement.classList.toggle('dark', next === 'dark')
+        document.documentElement.style.colorScheme = next
         try { localStorage.setItem('theme', next) } catch (e) {}
-        const startVT = (document as Document & { startViewTransition?: (cb: () => void) => unknown }).startViewTransition
-        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        if (startVT && !reduced) {
-            startVT.call(document, () => apply(next))
-        } else {
-            apply(next)
-        }
     }
     const bind = () => {
         const btn = document.getElementById('theme-toggle') as (HTMLButtonElement & { dataset: DOMStringMap }) | null
@@ -45,16 +36,26 @@
         display: block;
     }
 
-    ::view-transition-old(root),
-    ::view-transition-new(root) {
-        animation-duration: 450ms;
-        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    /* Animate theme changes. Gated on `.theme-ready` (added by the
+       BaseLayout init script after first paint) so the initial render
+       doesn't fade in from default colors. */
+    .theme-ready,
+    .theme-ready body,
+    .theme-ready *,
+    .theme-ready *::before,
+    .theme-ready *::after {
+        transition-property: background-color, border-color, color, fill, stroke;
+        transition-duration: 300ms;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     @media (prefers-reduced-motion: reduce) {
-        ::view-transition-old(root),
-        ::view-transition-new(root) {
-            animation: none !important;
+        .theme-ready,
+        .theme-ready body,
+        .theme-ready *,
+        .theme-ready *::before,
+        .theme-ready *::after {
+            transition: none;
         }
     }
 </style>
