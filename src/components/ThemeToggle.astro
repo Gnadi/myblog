@@ -6,11 +6,20 @@
 </button>
 
 <script>
+    const apply = (theme: 'dark' | 'light') => {
+        document.documentElement.classList.toggle('dark', theme === 'dark')
+        document.documentElement.style.colorScheme = theme
+    }
     const onToggle = () => {
-        const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark'
-        document.documentElement.classList.toggle('dark', next === 'dark')
-        document.documentElement.style.colorScheme = next
+        const next: 'dark' | 'light' = document.documentElement.classList.contains('dark') ? 'light' : 'dark'
         try { localStorage.setItem('theme', next) } catch (e) {}
+        const startVT = (document as Document & { startViewTransition?: (cb: () => void) => unknown }).startViewTransition
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        if (startVT && !reduced) {
+            startVT.call(document, () => apply(next))
+        } else {
+            apply(next)
+        }
     }
     const bind = () => {
         const btn = document.getElementById('theme-toggle') as (HTMLButtonElement & { dataset: DOMStringMap }) | null
@@ -34,5 +43,18 @@
     }
     .dark .icon-moon {
         display: block;
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation-duration: 450ms;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation: none !important;
+        }
     }
 </style>
