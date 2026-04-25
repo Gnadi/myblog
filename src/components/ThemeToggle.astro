@@ -6,14 +6,20 @@
 </button>
 
 <script>
-    import { handleToggleClick } from 'astro-theme-toggle'
-    const addListener = () => {
-        document
-            .getElementById('theme-toggle')
-            ?.addEventListener('click', handleToggleClick)
+    const onToggle = () => {
+        const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark'
+        document.documentElement.classList.toggle('dark', next === 'dark')
+        document.documentElement.style.colorScheme = next
+        try { localStorage.setItem('theme', next) } catch (e) {}
     }
-    addListener()
-    document.addEventListener('astro:after-swap', addListener)
+    const bind = () => {
+        const btn = document.getElementById('theme-toggle') as (HTMLButtonElement & { dataset: DOMStringMap }) | null
+        if (!btn || btn.dataset.themeBound) return
+        btn.dataset.themeBound = '1'
+        btn.addEventListener('click', onToggle)
+    }
+    bind()
+    document.addEventListener('astro:after-swap', bind)
 </script>
 
 <style is:global>

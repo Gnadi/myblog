@@ -1,25 +1,46 @@
 ---
 import BaseHead from "@/components/BaseHead.astro";
 import Footer from "@/components/global/Footer.astro";
-import { ThemeScript } from 'astro-theme-toggle';
 import Analytics from '@vercel/analytics/astro';
 ---
 
 <html lang="en">
   <head>
     <BaseHead />
-    <ThemeScript />
     <Analytics />
+    <style is:global>
+      html, body, *, *::before, *::after {
+        transition-property: background-color, border-color, color, fill, stroke !important;
+        transition-duration: 400ms !important;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html, body, *, *::before, *::after {
+          transition: none !important;
+        }
+      }
+    </style>
     <script is:inline>
-      window.addEventListener('pageshow', function(event) {
-        if (event.persisted) {
-          var stored = localStorage.getItem('theme-toggle');
-          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var theme = (stored === 'dark' || stored === 'light') ? stored : (systemDark ? 'dark' : 'light');
+      (function () {
+        function getTheme() {
+          try {
+            var stored = localStorage.getItem('theme');
+            if (stored === 'dark' || stored === 'light') return stored;
+          } catch (e) {}
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        function applyTheme(theme) {
           document.documentElement.classList.toggle('dark', theme === 'dark');
           document.documentElement.style.colorScheme = theme;
         }
-      });
+        applyTheme(getTheme());
+        window.addEventListener('pageshow', function (event) {
+          if (event.persisted) applyTheme(getTheme());
+        });
+        document.addEventListener('astro:after-swap', function () {
+          applyTheme(getTheme());
+        });
+      })();
     </script>
   </head>
   <body class="bg-white dark:bg-gray-900 flex flex-col min-h-screen">
