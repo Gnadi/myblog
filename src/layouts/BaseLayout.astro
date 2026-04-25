@@ -8,6 +8,18 @@ import Analytics from '@vercel/analytics/astro';
   <head>
     <BaseHead />
     <Analytics />
+    <style is:global>
+      html, body, *, *::before, *::after {
+        transition-property: background-color, border-color, color, fill, stroke !important;
+        transition-duration: 400ms !important;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html, body, *, *::before, *::after {
+          transition: none !important;
+        }
+      }
+    </style>
     <script is:inline>
       (function () {
         function getTheme() {
@@ -27,13 +39,6 @@ import Analytics from '@vercel/analytics/astro';
         });
         document.addEventListener('astro:after-swap', function () {
           applyTheme(getTheme());
-        });
-        // Enable color transitions only after first paint to avoid an
-        // initial fade from default → stored theme.
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () {
-            document.documentElement.classList.add('theme-ready');
-          });
         });
       })();
     </script>

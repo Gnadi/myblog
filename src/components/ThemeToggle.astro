@@ -35,27 +35,4 @@
     .dark .icon-moon {
         display: block;
     }
-
-    /* Animate theme changes. Gated on `.theme-ready` (added by the
-       BaseLayout init script after first paint) so the initial render
-       doesn't fade in from default colors. */
-    .theme-ready,
-    .theme-ready body,
-    .theme-ready *,
-    .theme-ready *::before,
-    .theme-ready *::after {
-        transition-property: background-color, border-color, color, fill, stroke;
-        transition-duration: 300ms;
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .theme-ready,
-        .theme-ready body,
-        .theme-ready *,
-        .theme-ready *::before,
-        .theme-ready *::after {
-            transition: none;
-        }
-    }
 </style>
