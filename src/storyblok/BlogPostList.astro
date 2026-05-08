@@ -1,6 +1,7 @@
 ---
 import { storyblokEditable } from '@storyblok/astro'
 import EntriesOne from "../components/entries/EntriesOne.astro";
+import { getReadingTime } from '../utils/readingTime';
 
 const {blokdata} = Astro.props;
 
@@ -12,6 +13,7 @@ const posts = blokdata.stories.map(story => {
         image: story.content.image,
         tags: story.tag_list ? story.tag_list : "",
         slug: story.full_slug,
+        readingTime: getReadingTime(story.content.content ?? story.content.description ?? ''),
     }
 })
 
@@ -28,6 +30,7 @@ const { blok } = Astro.props
                     image={post.image?.filename}
                     tags={post.tags}
                     index={index}
+                    readingTime={post.readingTime}
             />
     )))}
 </ul>

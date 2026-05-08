@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 
-const { title, url, description, pubDate, image, tags , index} = Astro.props;
+const { title, url, description, pubDate, image, tags, index, readingTime } = Astro.props;
 ---
 
 <li>
@@ -21,8 +21,9 @@ const { title, url, description, pubDate, image, tags , index} = Astro.props;
         <h2 class="mt-2 text-xl font-bold dark:text-white">
           {title}
         </h2>
-        <div class="flex text-xs text-zinc-400 dark:text-white">
-          {pubDate}
+        <div class="flex gap-1 text-xs text-zinc-400 dark:text-white">
+          <span>{pubDate}</span>
+          {readingTime && <span>· {readingTime} min</span>}
         </div>
       </div>
     </div>
