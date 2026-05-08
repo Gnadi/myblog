@@ -40,7 +40,7 @@ const { data: allStoriesData } = await sbApi.get("cdn/stories", {
 const readingTime = getReadingTime(story.content.content ?? '');
 
 const relatedPosts = getRelatedPosts(
-    story.slug,
+    story.full_slug,
     story.tag_list ?? [],
     allStoriesData.stories.map((s: any) => ({
         slug: s.full_slug,
