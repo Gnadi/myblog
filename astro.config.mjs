@@ -20,7 +20,7 @@ export default defineConfig({
     skipInline: false,
     drafts: true
   },
-  site: 'https://lexingtonthemes.com',
+  site: 'https://blog.gnadlinger.me',
   integrations: [tailwind(), sitemap(), icon(), storyblok({
     accessToken: env.STORYBLOK_TOKEN,
     components: {

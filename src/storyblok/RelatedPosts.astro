@@ -1,0 +1,37 @@
+---
+import { Image } from 'astro:assets';
+import type { PostSummary } from '../utils/relatedPosts';
+
+const { posts } = Astro.props as { posts: PostSummary[] };
+---
+
+{posts.length > 0 && (
+  <section class="mt-16 max-w-2xl mx-auto border-t pt-10 dark:border-slate-700">
+    <h2 class="text-sm font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-6">Verwandte Artikel</h2>
+    <ul class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      {posts.map(post => (
+        <li>
+          <a href={`/${post.slug}`} class="group block rounded-lg border dark:border-slate-600 overflow-hidden hover:shadow-md transition-shadow">
+            {post.image && (
+              <Image
+                src={`${post.image}/m/600x400/filters:format(webp)`}
+                alt={post.title}
+                width={300}
+                height={200}
+                class="w-full h-auto"
+                style="aspect-ratio: 3/2; object-fit: cover;"
+                loading="lazy"
+              />
+            )}
+            <div class="p-3">
+              <p class="text-xs text-zinc-400 dark:text-zinc-500 mb-1">{post.date}</p>
+              <h3 class="text-sm font-medium text-black dark:text-white line-clamp-2">
+                {post.title}
+              </h3>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
