@@ -1,9 +1,10 @@
 ---
 import { storyblokEditable } from '@storyblok/astro'
-import {marked} from "marked";
+import { marked } from "marked";
+import { addHeadingIds } from '../utils/extractHeadings'
 const { blok } = Astro.props
 
-const parsedContent = marked(blok.content || '') // Convert Markdown to HTML
+const parsedContent = addHeadingIds(await marked(blok.content || ''))
 ---
 <article {...storyblokEditable(blok)}>
     <h1 class="lg:text-center text-4xl tracking-tight text-balance font-light font-display text-black md:text-6xl">

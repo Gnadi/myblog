@@ -1,0 +1,46 @@
+---
+import type { Heading } from '../utils/extractHeadings';
+
+const { headings } = Astro.props as { headings: Heading[] };
+---
+
+<nav class="sticky top-8">
+  <p class="text-xs uppercase font-semibold tracking-widest text-zinc-400 dark:text-zinc-500 mb-3">Inhalt</p>
+  <ul class="space-y-2 border-l dark:border-slate-700">
+    {headings.map(h => (
+      <li>
+        <a
+          href={`#${h.id}`}
+          data-toc-link
+          class={`block text-xs text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors py-0.5 border-l-2 border-transparent -ml-px ${h.level === 3 ? 'pl-5' : 'pl-3'}`}
+        >
+          {h.text}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+  const headingEls = [...links]
+    .map(l => document.querySelector(l.getAttribute('href')!))
+    .filter(Boolean) as HTMLElement[];
+
+  const activate = (el: HTMLElement | null) => {
+    links.forEach(l => l.classList.remove('border-black', 'dark:border-white', 'text-black', 'dark:text-white'));
+    if (!el) return;
+    const link = document.querySelector<HTMLAnchorElement>(`[data-toc-link][href="#${el.id}"]`);
+    link?.classList.add('border-black', 'dark:border-white', 'text-black', 'dark:text-white');
+  };
+
+  const observer = new IntersectionObserver(
+    entries => {
+      const visible = entries.filter(e => e.isIntersecting);
+      if (visible.length > 0) activate(visible[0].target as HTMLElement);
+    },
+    { rootMargin: '0px 0px -60% 0px', threshold: 0 }
+  );
+
+  headingEls.forEach(el => observer.observe(el));
+</script>

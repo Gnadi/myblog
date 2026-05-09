@@ -7,6 +7,8 @@ import ThemeToggle from "../../components/ThemeToggle.astro";
 import { getReadingTime } from '../../utils/readingTime';
 import { getRelatedPosts } from '../../utils/relatedPosts';
 import RelatedPosts from '../../storyblok/RelatedPosts.astro';
+import { extractHeadingsFromRichText, extractHeadingsFromMarkdown } from '../../utils/extractHeadings';
+import TableOfContents from '../../components/TableOfContents.astro';
 
 export async function getStaticPaths() {
     const sbApi = useStoryblokApi();
@@ -38,6 +40,10 @@ const { data: allStoriesData } = await sbApi.get("cdn/stories", {
 });
 
 const readingTime = getReadingTime(story.content.content ?? '');
+
+const headings = story.content.component === 'blogPostMarkdown'
+    ? extractHeadingsFromMarkdown(story.content.content ?? '')
+    : extractHeadingsFromRichText(story.content.content);
 
 const relatedPosts = getRelatedPosts(
     story.full_slug,
@@ -93,9 +99,16 @@ const relatedPosts = getRelatedPosts(
           </div>
       </div>
 
-        <div class="mt-12 max-w-2xl mx-auto">
-            <div class="prose-styles">
-                <StoryblokComponent blok={story.content}/>
+        <div class="mt-12 max-w-2xl mx-auto lg:max-w-4xl">
+            <div class="lg:grid lg:grid-cols-[1fr_200px] lg:gap-10">
+                <div class="prose-styles">
+                    <StoryblokComponent blok={story.content}/>
+                </div>
+                {headings.length > 0 && (
+                    <aside class="hidden lg:block">
+                        <TableOfContents headings={headings} />
+                    </aside>
+                )}
             </div>
         </div>
         <RelatedPosts posts={relatedPosts} />
