@@ -2,6 +2,7 @@
 import {useStoryblokApi} from '@storyblok/astro'
 import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro'
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { SITE_URL } from "../../consts";
 import {Image} from 'astro:assets';
 import ThemeToggle from "../../components/ThemeToggle.astro";
 import { getReadingTime } from '../../utils/readingTime';
@@ -62,7 +63,14 @@ const relatedPosts = getRelatedPosts(
     });
 </script>
 
-<BaseLayout>
+<BaseLayout
+  title={story.content.title}
+  description={story.content.description || undefined}
+  image={`${story.content.image.filename}/m/1200x630/filters:format(webp)`}
+  url={new URL(`/blog/${slug}`, SITE_URL).href}
+  type="article"
+  publishedDate={story.content.pubDate}
+>
     <div class="relative w-full invisible lg:visible">
         <div class="absolute right-5 top-5 lg:right-10 lg:top-10">
             <ThemeToggle />
