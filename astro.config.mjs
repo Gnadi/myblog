@@ -1,5 +1,4 @@
 import { defineConfig } from 'astro/config';
-import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
 import { loadEnv } from 'vite';
 import {storyblok} from '@storyblok/astro';
@@ -10,18 +9,13 @@ const env = loadEnv("", process.cwd(), 'STORYBLOK');
 // https://astro.build/config
 export default defineConfig({
   markdown: {
-    drafts: true,
     shikiConfig: {
-      theme: "css-variables"
+      theme: "css-variables",
+      wrap: true,
     }
   },
-  shikiConfig: {
-    wrap: true,
-    skipInline: false,
-    drafts: true
-  },
   site: 'https://blog.gnadlinger.me',
-  integrations: [tailwind(), sitemap(), icon(), storyblok({
+  integrations: [sitemap(), icon(), storyblok({
     accessToken: env.STORYBLOK_TOKEN,
     components: {
       blogPost: 'storyblok/BlogPost',
