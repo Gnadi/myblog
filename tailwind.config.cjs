@@ -109,7 +109,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        display: ['"Gilda Display"', ...defaultTheme.fontFamily.serif],
+        // Überschriften nutzen bewusst den System-Font-Stack (GitHub-Look).
+        display: defaultTheme.fontFamily.sans,
         mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
       },
     },
