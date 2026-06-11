@@ -7,16 +7,16 @@ import {Image} from 'astro:assets';
 import ThemeToggle from "../../components/ThemeToggle.astro";
 import { getReadingTime } from '../../utils/readingTime';
 import { getRelatedPosts } from '../../utils/relatedPosts';
+import { getAllStories, contentVersion } from '../../utils/storyblok';
 import RelatedPosts from '../../storyblok/RelatedPosts.astro';
 
 export async function getStaticPaths() {
     const sbApi = useStoryblokApi();
 
-    const {data} = await sbApi.get("cdn/stories", {
-        version: import.meta.env.DEV ? "draft" : "published",
+    const stories = await getAllStories(sbApi, {
+        version: contentVersion,
+        starts_with: "blog/",
     });
-
-    const stories = Object.values(data.stories);
 
     return stories.map((story) => {
         return {
@@ -28,13 +28,13 @@ export async function getStaticPaths() {
 const sbApi = useStoryblokApi();
 const {slug} = Astro.params;
 const {data} = await sbApi.get(`cdn/stories/blog/${slug}`, {
-    version: import.meta.env.DEV ? "draft" : "published",
+    version: contentVersion,
 });
 
 const story = data.story;
 
-const { data: allStoriesData } = await sbApi.get("cdn/stories", {
-    version: import.meta.env.DEV ? "draft" : "published",
+const allStories = await getAllStories(sbApi, {
+    version: contentVersion,
     starts_with: "blog/",
 });
 
@@ -43,7 +43,7 @@ const readingTime = getReadingTime(story.content.content ?? '');
 const relatedPosts = getRelatedPosts(
     story.full_slug,
     story.tag_list ?? [],
-    allStoriesData.stories.map((s: any) => ({
+    allStories.map((s: any) => ({
         slug: s.full_slug,
         tags: s.tag_list ?? [],
         title: s.content.title,
@@ -52,10 +52,11 @@ const relatedPosts = getRelatedPosts(
         date: new Date(s.published_at).toLocaleDateString("de-AT", { dateStyle: "medium" }),
     }))
 );
+
+const heroImage = story.content.image?.filename;
 ---
 <script>
-    import hljs from 'highlight.js';
-    import 'highlight.js/styles/github.css'; // Verwende das GitHub-Theme
+    import hljs from 'highlight.js/lib/common';
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('pre code').forEach((block:HTMLElement) => {
             hljs.highlightElement(block);
@@ -66,7 +67,7 @@ const relatedPosts = getRelatedPosts(
 <BaseLayout
   title={story.content.title}
   description={story.content.description || undefined}
-  image={`${story.content.image.filename}/m/1200x630/filters:format(webp)`}
+  image={heroImage ? `${heroImage}/m/1200x630/filters:format(webp)` : undefined}
   url={new URL(`/blog/${slug}`, SITE_URL).href}
   type="article"
   publishedDate={story.content.pubDate}
@@ -78,21 +79,23 @@ const relatedPosts = getRelatedPosts(
     </div>
     <div class="px-8 py-12 md:px-12 mx-auto lg:pb-24 max-w-7xl lg:px-32 lg:pt-32">
       <div class="lg:text-center">
-        <Image
-                class="lg:h-72 w-full  object-cover object-center rounded-xl"
-                src={`${story.content.image.filename}/m/1200x800/filters:format(webp)`}
-                alt="bild"
-                width="480"
-                height="620"
-                loading="eager"
-                fetchpriority='high'
-        />
+        {heroImage && (
+          <Image
+                  class="lg:h-72 w-full  object-cover object-center rounded-xl"
+                  src={`${heroImage}/m/1200x800/filters:format(webp)`}
+                  alt={story.content.title}
+                  width="1200"
+                  height="800"
+                  loading="eager"
+                  fetchpriority='high'
+          />
+        )}
           <div class="flex  flex-col md:flex-row mt-4 justify-between">
               <p class="text-xs text-zinc-500 ">{story.content.pubDate?.toString().slice(0, 10)} - Written by: {story.content.author} · {readingTime} min Lesezeit</p>
               <div class="flex gap-3">
                   {
-                      story.tag_list.map((tag: string) => (
-                          <a href={`/tags/${tag}`} class="inline-flex items-center uppercase text-xs font-medium text-black dark:text-white hover:text-zinc-500 dark:hover:text-zinc-300 transition-colors">
+                      (story.tag_list ?? []).map((tag: string) => (
+                          <a href={`/tags/${encodeURIComponent(tag)}`} class="inline-flex items-center uppercase text-xs font-medium text-black dark:text-white hover:text-zinc-500 dark:hover:text-zinc-300 transition-colors">
                               {tag}
                           </a>
                       ))
@@ -112,24 +115,3 @@ const relatedPosts = getRelatedPosts(
         </div>
     </div>
 </BaseLayout>
-
-<style>
-
-    .link-underline {
-        border-bottom-width: 0;
-        background-image: linear-gradient(transparent, transparent), linear-gradient(#fff, #fff);
-        background-size: 0 3px;
-        background-position: 0 100%;
-        background-repeat: no-repeat;
-        transition: background-size .5s ease-in-out;
-    }
-
-    .link-underline-black {
-        background-image: linear-gradient(transparent, transparent), linear-gradient(#050505, #050505)
-    }
-
-    .link-underline:hover {
-        background-size: 100% 3px;
-        background-position: 0 100%
-    }
-</style>

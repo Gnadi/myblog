@@ -3,15 +3,16 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import {useStoryblokApi} from "@storyblok/astro";
 import BlogPostList from "../../storyblok/BlogPostList.astro";
 import ThemeToggle from "../../components/ThemeToggle.astro";
+import { getAllStories, contentVersion } from "../../utils/storyblok";
 
 export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi();
   const { data } = await storyblokApi.get('cdn/tags', {
-    version: import.meta.env.DEV ? "draft" : "published",
+    version: contentVersion,
   })
 
-  const uniqueTags = [
-    ...new Set(data.tags.map((tag) => tag.name).flat()),
+  const uniqueTags: string[] = [
+    ...new Set<string>(data.tags.map((tag: { name: string }) => tag.name)),
   ];
   return uniqueTags.map((tag) => {
     return {params: {tag: tag}}
@@ -20,16 +21,14 @@ export async function getStaticPaths() {
 
 const { tag } = Astro.params;
 const storyblokApi = useStoryblokApi();
-const { data } = await storyblokApi.get(`cdn/stories`, {
-  version: import.meta.env.DEV ? "draft" : "published",
-})
-
-
-let filteredStories = data.stories.filter(story => story.tag_list.includes(tag));
-data.stories = filteredStories;
+const stories = await getAllStories(storyblokApi, {
+  version: contentVersion,
+  starts_with: "blog/",
+  with_tag: tag,
+});
 ---
 
-<BaseLayout title={`Blogposts „${tag}"`}>
+<BaseLayout title={`Blogposts „${tag}“`}>
   <div class="relative w-full">
     <div class="absolute right-5 top-5 lg:right-10 lg:top-10">
       <ThemeToggle />
@@ -39,10 +38,10 @@ data.stories = filteredStories;
     <div class="px-8 py-12 md:px-12 mx-auto lg:pb-24 max-w-7xl lg:px-32 lg:pt-48">
       <div class="lg:text-center">
         <a href="/" class="text-5xl tracking-tight text-balance font-medium font-display text-black dark:text-white md:text-6xl">
-          Blogposts "{tag}"
+          Blogposts „{tag}“
         </a>
       </div>
-      {data.stories ? <BlogPostList blokdata={data}/> : ''}
+      <BlogPostList blokdata={{ stories }}/>
     </div>
   </section>
 </BaseLayout>

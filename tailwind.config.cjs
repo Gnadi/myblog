@@ -109,8 +109,9 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: ['var(--font-heading)', ...defaultTheme.fontFamily.sans],
-        body: ['var(--font-body)', ...defaultTheme.fontFamily.sans]
+        // Überschriften nutzen bewusst den System-Font-Stack (GitHub-Look).
+        display: defaultTheme.fontFamily.sans,
+        mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
       },
     },
   },

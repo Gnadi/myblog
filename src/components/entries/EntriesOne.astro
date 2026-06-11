@@ -2,22 +2,26 @@
 import { Image } from 'astro:assets';
 
 const { title, url, description, pubDate, image, tags, index, readingTime } = Astro.props;
+
+const tagLabel = Array.isArray(tags) ? tags.join(', ') : tags;
 ---
 
 <li>
-  <a href={url} title={title} class="group max-h-65 min-h-65">
-    <div class="rounded-lg border bg-card text-card-foreground shadow-sm max-w-md mx-auto min-h-full dark:border-slate-600">
-      <Image
-          class="w-full h-auto rounded-t-lg"
-          src={`${image}/m/1200x800/filters:format(webp)`}
-          alt={title}
-          loading={index < 2 ? "eager" : "lazy"}
-          width="600"
-          height="300"
-          style="aspect-ratio: 600 / 300; object-fit: cover;"
-      />
+  <a href={`/${url}`} title={title} class="group">
+    <div class="rounded-lg border shadow-sm max-w-md mx-auto min-h-full dark:border-slate-600">
+      {image && (
+        <Image
+            class="w-full h-auto rounded-t-lg"
+            src={`${image}/m/1200x800/filters:format(webp)`}
+            alt={title}
+            loading={index < 2 ? "eager" : "lazy"}
+            width="600"
+            height="300"
+            style="aspect-ratio: 600 / 300; object-fit: cover;"
+        />
+      )}
       <div class="p-4">
-        <p class="text-xs font-semibold text-muted-foreground dark:text-white">{tags}</p>
+        <p class="text-xs font-semibold text-zinc-500 dark:text-white">{tagLabel}</p>
         <h2 class="mt-2 text-xl font-bold text-black dark:text-white">
           {title}
         </h2>

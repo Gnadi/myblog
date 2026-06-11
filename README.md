@@ -1,7 +1,7 @@
 # MyBlog
 
 Welcome to **MyBlog**! This is a personal blog built using [Astro](https://astro.build) and [Tailwind](https://tailwindcss.com/),a simple, blog-aware static site generator.\
-It's designed to showcase my thoughts, projects, and ideas in a clean and minimalist design. You can view the blog at [gnadlinger.me](https://gnadlinger.me).
+It's designed to showcase my thoughts, projects, and ideas in a clean and minimalist design. You can view the blog at [blog.gnadlinger.me](https://blog.gnadlinger.me).
 For writing my blog posts I use the Headless CMS [Storyblok](https://storyblok.com/)
 
 ## Features
