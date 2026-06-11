@@ -109,8 +109,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: ['var(--font-heading)', ...defaultTheme.fontFamily.sans],
-        body: ['var(--font-body)', ...defaultTheme.fontFamily.sans]
+        display: ['"Gilda Display"', ...defaultTheme.fontFamily.serif],
+        mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
       },
     },
   },

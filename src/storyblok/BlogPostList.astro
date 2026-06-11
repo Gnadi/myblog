@@ -3,7 +3,7 @@ import { storyblokEditable } from '@storyblok/astro'
 import EntriesOne from "../components/entries/EntriesOne.astro";
 import { getReadingTime } from '../utils/readingTime';
 
-const {blokdata} = Astro.props;
+const { blokdata, blok } = Astro.props;
 
 const posts = blokdata.stories.map(story => {
     return {
@@ -11,15 +11,13 @@ const posts = blokdata.stories.map(story => {
         date: new Date(story.published_at).toLocaleDateString("de-AT", {dateStyle: "medium"}),
         description: story.content.description,
         image: story.content.image,
-        tags: story.tag_list ? story.tag_list : "",
+        tags: story.tag_list ?? [],
         slug: story.full_slug,
         readingTime: getReadingTime(story.content.content ?? story.content.description ?? ''),
     }
 })
-
-const { blok } = Astro.props
 ---
-<ul class="grid grid-cols-1 mt-12 gap-3 gap-y-24 lg:grid-cols-2 sm:grid-cols-2" {...storyblokEditable(blok)}>
+<ul class="grid grid-cols-1 mt-12 gap-3 gap-y-24 lg:grid-cols-2 sm:grid-cols-2" {...(blok ? storyblokEditable(blok) : {})}>
     {posts.map(((post, index) => (
             <EntriesOne
                     url={post.slug}
@@ -34,34 +32,3 @@ const { blok } = Astro.props
             />
     )))}
 </ul>
-
-<style>
-    .nr-scroll-animation {
-        --nr-animation-transform-x: 0;
-        --nr-animation-transform-y: 0;
-        --nr-animation-transform-scale: 1;
-        --nr-animation-duration: 800ms
-    }
-
-    .nr-scroll-animation--off {
-        opacity: 0 !important
-    }
-
-    .nr-scroll-animation--on {
-        animation-name: nr-scroll-animation;
-        animation-duration: var(--nr-animation-duration);
-        animation-timing-function: cubic-bezier(0.4, 0, 0.25, 1)
-    }
-
-    @keyframes nr-scroll-animation {
-        from {
-            opacity: 0;
-            transform: translate(var(--nr-animation-transform-x), var(--nr-animation-transform-y)) scale(var(--nr-animation-transform-scale))
-        }
-
-        to {
-            opacity: 1;
-            transform: translate(0, 0) scale(1)
-        }
-    }
-</style>

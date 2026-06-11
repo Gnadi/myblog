@@ -1,5 +1,17 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 ---
-<BaseLayout>
+<BaseLayout title="Seite nicht gefunden">
+  <section class="px-8 md:px-12 mx-auto max-w-3xl py-32 text-center">
+    <h1 class="text-8xl font-display text-black dark:text-white">404</h1>
+    <p class="mt-6 text-lg text-zinc-500 dark:text-zinc-400">
+      Diese Seite gibt es nicht – vielleicht wurde sie verschoben oder der Link ist veraltet.
+    </p>
+    <a
+      href="/"
+      class="mt-10 inline-block rounded-full border border-gray-300 dark:border-gray-600 px-6 py-2 text-sm font-medium text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+    >
+      Zur Startseite
+    </a>
+  </section>
 </BaseLayout>

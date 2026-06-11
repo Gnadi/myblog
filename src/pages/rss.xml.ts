@@ -1,18 +1,21 @@
 import rss from '@astrojs/rss';
 import { useStoryblokApi } from '@storyblok/astro';
+import { getAllStories } from '../utils/storyblok';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 export async function GET(context: any) {
   const sbApi = useStoryblokApi();
-  const { data } = await sbApi.get('cdn/stories', {
+  const stories = await getAllStories(sbApi, {
     version: 'published',
     starts_with: 'blog/',
   });
 
   return rss({
-    title: 'HelloDad',
-    description: 'Blog von Johannes Gnadlinger',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     site: context.site,
-    items: data.stories.map((story: any) => ({
+    customData: '<language>de</language>',
+    items: stories.map((story: any) => ({
       title: story.content.title,
       pubDate: new Date(story.published_at),
       description: story.content.description ?? '',

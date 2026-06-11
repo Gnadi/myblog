@@ -15,7 +15,7 @@ interface Props {
 const { title, description, image, url, type, publishedDate } = Astro.props;
 ---
 
-<html lang="en">
+<html lang="de">
   <head>
     <BaseHead
       title={title}
@@ -27,13 +27,23 @@ const { title, description, image, url, type, publishedDate } = Astro.props;
     />
     <Analytics />
     <style is:global>
-      html, body, *, *::before, *::after {
+      /* Nur während des Theme-Wechsels aktiv (Attribut setzt der ThemeToggle),
+         damit nicht dauerhaft jedes Element eine Transition trägt. */
+      html[data-theme-transition],
+      html[data-theme-transition] body,
+      html[data-theme-transition] *,
+      html[data-theme-transition] *::before,
+      html[data-theme-transition] *::after {
         transition-property: background-color, border-color, color, fill, stroke !important;
         transition-duration: 400ms !important;
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
       }
       @media (prefers-reduced-motion: reduce) {
-        html, body, *, *::before, *::after {
+        html[data-theme-transition],
+        html[data-theme-transition] body,
+        html[data-theme-transition] *,
+        html[data-theme-transition] *::before,
+        html[data-theme-transition] *::after {
           transition: none !important;
         }
       }

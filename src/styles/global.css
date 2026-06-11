@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 :root {
-  --text-font: 'Inter', sans-serif;
-  --code-font: 'Fira Code', monospace;
   font-size: 120%;
 }
 
@@ -25,14 +23,14 @@
 
 /* Stile für Inline-Code */
 .prose-styles code {
-  @apply bg-gray-100 dark:bg-gray-800 text-black dark:text-gray-100 px-1 rounded;
-  font-size: 85%; /* Kleinesre Schriftgröße für Inline-Code */
+  @apply bg-gray-100 dark:bg-gray-800 text-black dark:text-gray-100 px-1 rounded font-mono;
+  font-size: 85%; /* Kleinere Schriftgröße für Inline-Code */
   word-wrap: break-word; /* Lange Code-Zeilen umbrechen */
 }
 
 /* Stile für Code-Blöcke */
 .prose-styles pre {
-  @apply bg-gray-100 dark:bg-gray-800 text-black dark:text-gray-100 p-4 rounded overflow-x-auto;
+  @apply bg-gray-100 dark:bg-gray-800 text-black dark:text-gray-100 p-4 rounded overflow-x-auto font-mono;
   font-size: 120%; /* Konsistente Schriftgröße für Code-Blöcke */
   margin-top: 1em; /* Abstand vor Code-Blöcken */
   margin-bottom: 1em; /* Abstand nach Code-Blöcken */
@@ -41,4 +39,134 @@
 
 .prose-styles pre code {
   @apply bg-transparent p-0 text-black dark:text-gray-100;
+}
+
+/* Animierte Link-Unterstreichung (Tag-Links auf Start- und Tag-Seite) */
+.link-underline {
+  border-bottom-width: 0;
+  background-image: linear-gradient(transparent, transparent), linear-gradient(#050505, #050505);
+  background-size: 0 3px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size .5s ease-in-out;
+}
+
+.dark .link-underline {
+  background-image: linear-gradient(transparent, transparent), linear-gradient(#fff, #fff);
+}
+
+.link-underline:hover {
+  background-size: 100% 3px;
+  background-position: 0 100%;
+}
+
+/* Syntax-Highlighting für highlight.js – GitHub-Farbschema mit Dark-Mode-Variante,
+   passend zu den hellen/dunklen pre-Hintergründen oben. */
+.hljs-comment,
+.hljs-quote {
+  color: #6e7781;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-template-tag,
+.hljs-type {
+  color: #cf222e;
+}
+
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.function_,
+.hljs-section {
+  color: #8250df;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition {
+  color: #0a3069;
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-meta,
+.hljs-built_in,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link {
+  color: #0550ae;
+}
+
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-tag {
+  color: #116329;
+}
+
+.hljs-deletion {
+  color: #82071e;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.dark .hljs-comment,
+.dark .hljs-quote {
+  color: #8b949e;
+}
+
+.dark .hljs-keyword,
+.dark .hljs-selector-tag,
+.dark .hljs-template-tag,
+.dark .hljs-type {
+  color: #ff7b72;
+}
+
+.dark .hljs-title,
+.dark .hljs-title.class_,
+.dark .hljs-title.function_,
+.dark .hljs-section {
+  color: #d2a8ff;
+}
+
+.dark .hljs-string,
+.dark .hljs-regexp,
+.dark .hljs-addition {
+  color: #a5d6ff;
+}
+
+.dark .hljs-number,
+.dark .hljs-literal,
+.dark .hljs-attr,
+.dark .hljs-attribute,
+.dark .hljs-variable,
+.dark .hljs-template-variable,
+.dark .hljs-meta,
+.dark .hljs-built_in,
+.dark .hljs-symbol,
+.dark .hljs-bullet,
+.dark .hljs-link {
+  color: #79c0ff;
+}
+
+.dark .hljs-name,
+.dark .hljs-selector-id,
+.dark .hljs-selector-class,
+.dark .hljs-tag {
+  color: #7ee787;
+}
+
+.dark .hljs-deletion {
+  color: #ffa198;
 }
