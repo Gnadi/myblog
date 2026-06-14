@@ -77,9 +77,18 @@ const ogImage = rawImage.startsWith("http")
 />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="icon" href="/favicons/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="192x192" href="/favicons/icon-192.png" />
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon.png" />
 <link rel="manifest" href="/favicons/site.webmanifest" />
-<meta name="msapplication-TileColor" content="#ffffff" />
-<meta name="theme-color" content="#ffffff" />
+<meta name="msapplication-TileColor" content="#2522FC" />
+<meta name="theme-color" content="#2522FC" />
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    });
+  }
+</script>
 <link
   href="https://api.fontshare.com/v2/css?f[]=jet-brains-mono@1,2&display=swap"
   rel="stylesheet"
