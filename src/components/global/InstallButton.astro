@@ -1,0 +1,53 @@
+---
+// Floating "Install app" button. Hidden by default; revealed only when the
+// browser fires `beforeinstallprompt` (i.e. the PWA is actually installable
+// and not already installed). Clicking it triggers the native install prompt.
+---
+
+<button
+  id="pwa-install"
+  type="button"
+  hidden
+  aria-label="App installieren"
+  class="fixed bottom-4 right-4 z-50 inline-flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-lg ring-1 ring-black/10 transition hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
+    <path d="M12 3v12" />
+    <path d="m7 10 5 5 5-5" />
+    <path d="M5 21h14" />
+  </svg>
+  App installieren
+</button>
+
+<script>
+  const btn = document.getElementById("pwa-install") as HTMLButtonElement | null;
+  if (btn) {
+    let deferredPrompt: any = null;
+
+    // Don't offer install when already running as an installed app.
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (navigator as any).standalone === true;
+
+    window.addEventListener("beforeinstallprompt", (e: Event) => {
+      e.preventDefault();
+      if (isStandalone) return;
+      deferredPrompt = e;
+      btn.hidden = false;
+    });
+
+    btn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      btn.hidden = true;
+    });
+
+    // Hide the button once the app gets installed.
+    window.addEventListener("appinstalled", () => {
+      btn.hidden = true;
+      deferredPrompt = null;
+    });
+  }
+</script>
