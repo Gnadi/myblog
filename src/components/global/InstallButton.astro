@@ -24,15 +24,30 @@
   if (btn) {
     let deferredPrompt: any = null;
 
-    // Don't offer install when already running as an installed app.
-    const isStandalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      (navigator as any).standalone === true;
+    // Returns true if the app is already installed. Chrome can still fire
+    // `beforeinstallprompt` in some cases after install, so we don't trust the
+    // event alone — we also check display-mode and getInstalledRelatedApps().
+    async function isInstalled() {
+      if (
+        window.matchMedia("(display-mode: standalone)").matches ||
+        (navigator as any).standalone === true
+      ) {
+        return true;
+      }
+      const getApps = (navigator as any).getInstalledRelatedApps;
+      if (typeof getApps === "function") {
+        try {
+          const apps = await getApps.call(navigator);
+          if (Array.isArray(apps) && apps.length > 0) return true;
+        } catch (e) {}
+      }
+      return false;
+    }
 
-    window.addEventListener("beforeinstallprompt", (e: Event) => {
+    window.addEventListener("beforeinstallprompt", async (e: Event) => {
       e.preventDefault();
-      if (isStandalone) return;
       deferredPrompt = e;
+      if (await isInstalled()) return;
       btn.hidden = false;
     });
 

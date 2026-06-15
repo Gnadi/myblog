@@ -8,6 +8,12 @@
   "display": "standalone",
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://blog.gnadlinger.me/favicons/site.webmanifest"
+    }
+  ],
   "icons": [
     {
       "src": "/favicons/favicon.ico",
