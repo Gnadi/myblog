@@ -1,7 +1,6 @@
 ---
 import BaseHead from "@/components/BaseHead.astro";
 import Footer from "@/components/global/Footer.astro";
-import InstallButton from "@/components/global/InstallButton.astro";
 import Analytics from '@vercel/analytics/astro';
 
 interface Props {
@@ -79,6 +78,5 @@ const { title, description, image, url, type, publishedDate } = Astro.props;
   <body class="bg-white dark:bg-gray-900 flex flex-col min-h-screen">
     <main class="flex-grow"><slot /></main>
     <Footer />
-    <InstallButton />
   </body>
 </html>
