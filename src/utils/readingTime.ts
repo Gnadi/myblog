@@ -5,15 +5,30 @@ function extractTextFromNode(node: any): string {
   return '';
 }
 
-export function getReadingTime(content: string | object): number {
-  let text: string;
+function toPlainText(content: string | object): string {
   if (typeof content === 'object' && content !== null) {
-    text = extractTextFromNode(content);
-  } else if (typeof content === 'string' && content.includes('<')) {
-    text = content.replace(/<[^>]*>/g, ' ');
-  } else {
-    text = content as string;
+    return extractTextFromNode(content);
   }
+  if (typeof content === 'string' && content.includes('<')) {
+    return content.replace(/<[^>]*>/g, ' ');
+  }
+  return (content as string) ?? '';
+}
+
+export function getReadingTime(content: string | object): number {
+  const text = toPlainText(content);
   const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
   return Math.max(1, Math.ceil(words / 200));
+}
+
+/**
+ * Derives a unique meta-description excerpt from a post's actual body
+ * content, used as a fallback when the CMS `description` field is empty.
+ */
+export function getExcerpt(content: string | object, maxLength = 160): string {
+  const text = toPlainText(content).trim().replace(/\s+/g, ' ');
+  if (text.length <= maxLength) return text;
+  const truncated = text.slice(0, maxLength);
+  const lastSpace = truncated.lastIndexOf(' ');
+  return `${truncated.slice(0, lastSpace > 0 ? lastSpace : maxLength)}…`;
 }
