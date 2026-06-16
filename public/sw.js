@@ -2,7 +2,7 @@
 // Chrome's PWA install criteria require a registered service worker with a
 // fetch handler. This implements a small network-first strategy with an
 // offline fallback so the app stays installable and usable offline.
-const CACHE = "hellodad-v1";
+const CACHE = "hellodad-v2";
 const OFFLINE_URLS = ["/", "/favicons/site.webmanifest"];
 
 self.addEventListener("install", (event) => {

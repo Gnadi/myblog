@@ -12,8 +12,85 @@ const currentYear = new Date().getFullYear();
         <p><a href="/about">Über mich</a></p>
         <p><a href="/impressum">Impressum</a></p>
         <p><a href="/rss.xml">RSS Feed</a></p>
+        <p id="pwa-install-wrap" hidden>
+            <a id="pwa-install" href="#" role="button">App installieren</a>
+        </p>
     </div>
 </footer>
+<script>
+  const wrap = document.getElementById("pwa-install-wrap") as HTMLElement | null;
+  const link = document.getElementById("pwa-install") as HTMLAnchorElement | null;
+  if (wrap && link) {
+    let deferredPrompt: any = null;
+    const KEY = "pwa-installed";
+
+    function hide() {
+      wrap!.hidden = true;
+    }
+
+    // True when running inside the installed standalone app.
+    function isStandalone() {
+      return (
+        window.matchMedia("(display-mode: standalone)").matches ||
+        (navigator as any).standalone === true
+      );
+    }
+
+    // Source of truth is getInstalledRelatedApps(); it also self-heals the
+    // localStorage backstop so the link reappears after an uninstall.
+    async function isInstalled() {
+      if (isStandalone()) return true;
+      const getApps = (navigator as any).getInstalledRelatedApps;
+      if (typeof getApps === "function") {
+        try {
+          const apps = await getApps.call(navigator);
+          const has = Array.isArray(apps) && apps.length > 0;
+          if (has) localStorage.setItem(KEY, "1");
+          else localStorage.removeItem(KEY);
+          return has;
+        } catch (e) {}
+      }
+      // Fallback for browsers without the API.
+      return localStorage.getItem(KEY) === "1";
+    }
+
+    // Never offer install from within the installed app.
+    if (isStandalone()) hide();
+
+    window.addEventListener("beforeinstallprompt", async (e: Event) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (await isInstalled()) {
+        hide();
+        return;
+      }
+      wrap.hidden = false;
+    });
+
+    link.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      hide();
+    });
+
+    // Hide as soon as the app is installed, and remember it.
+    window.addEventListener("appinstalled", () => {
+      localStorage.setItem(KEY, "1");
+      deferredPrompt = null;
+      hide();
+    });
+
+    // If the page transitions into standalone, hide immediately.
+    window
+      .matchMedia("(display-mode: standalone)")
+      .addEventListener("change", (e) => {
+        if (e.matches) hide();
+      });
+  }
+</script>
 <style>
     footer {
         display: flex;
