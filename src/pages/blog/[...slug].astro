@@ -5,7 +5,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { SITE_URL } from "../../consts";
 import {Image} from 'astro:assets';
 import ThemeToggle from "../../components/ThemeToggle.astro";
-import { getReadingTime } from '../../utils/readingTime';
+import { getReadingTime, getExcerpt } from '../../utils/readingTime';
 import { getRelatedPosts } from '../../utils/relatedPosts';
 import { getAllStories, contentVersion } from '../../utils/storyblok';
 import RelatedPosts from '../../storyblok/RelatedPosts.astro';
@@ -66,7 +66,7 @@ const heroImage = story.content.image?.filename;
 
 <BaseLayout
   title={story.content.title}
-  description={story.content.description || undefined}
+  description={story.content.description || getExcerpt(story.content.content) || undefined}
   image={heroImage ? `${heroImage}/m/1200x630/filters:format(webp)` : undefined}
   url={new URL(`/blog/${slug}`, SITE_URL).href}
   type="article"
