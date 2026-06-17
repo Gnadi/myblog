@@ -5,6 +5,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { SITE_URL } from "../../consts";
 import {Image} from 'astro:assets';
 import ThemeToggle from "../../components/ThemeToggle.astro";
+import FontSizeToggle from "../../components/FontSizeToggle.astro";
 import { getReadingTime, getExcerpt } from '../../utils/readingTime';
 import { getRelatedPosts } from '../../utils/relatedPosts';
 import { getAllStories, contentVersion } from '../../utils/storyblok';
@@ -73,7 +74,8 @@ const heroImage = story.content.image?.filename;
   publishedDate={story.content.pubDate}
 >
     <div class="relative w-full invisible lg:visible">
-        <div class="absolute right-5 top-5 lg:right-10 lg:top-10">
+        <div class="absolute right-5 top-5 lg:right-10 lg:top-10 flex items-center gap-3">
+            <FontSizeToggle />
             <ThemeToggle />
         </div>
     </div>
@@ -118,7 +120,8 @@ const heroImage = story.content.image?.filename;
             ← Alle Beiträge
           </a>
         </div>
-        <div class="justify-center pt-4 w-full hidden max-lg:flex">
+        <div class="justify-center pt-4 w-full hidden max-lg:flex gap-4">
+                <FontSizeToggle />
                 <ThemeToggle />
         </div>
     </div>

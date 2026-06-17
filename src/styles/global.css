@@ -5,8 +5,9 @@
   font-size: 120%;
 }
 
-html[data-font-size="large"] { font-size: 140%; }
-html[data-font-size="xl"]    { font-size: 165%; }
+/* Scale only prose content text, not rem-based layout dimensions */
+html[data-font-size="large"] .prose-styles { font-size: 1rem; }
+html[data-font-size="xl"]    .prose-styles { font-size: 1.125rem; }
 
 .prose-styles {
   @apply text-sm prose text-neutral-600 prose-a:font-normal prose-a:text-blue-400 hover:prose-a:text-black prose-h1:text-black prose-img:rounded prose-h2:text-black prose-h2:font-semibold prose-p:text-sm prose-pre:font-mono max-w-none prose-pre:rounded-none;
