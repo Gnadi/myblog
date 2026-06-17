@@ -1,30 +1,19 @@
 ---
-// Schriftgrößen-Steuerung: skaliert die gesamte Website über die
-// Root-Schriftgröße. Stufen entsprechen dem Default aus global.css (120%).
+// Schriftgrößen-Steuerung: ein einzelner Button, der bei jedem Klick zur
+// nächsten Stufe wechselt und nach der größten wieder bei der kleinsten
+// beginnt. Skaliert die gesamte Website über die Root-Schriftgröße.
 ---
-<div class="font-size-control inline-flex items-center gap-1" role="group" aria-label="Schriftgröße anpassen">
-    <button
-        id="font-size-decrease"
-        type="button"
-        class="font-size-btn inline-flex items-center justify-center"
-        aria-label="Schrift verkleinern"
-    >
-        <!-- A mit Minus -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 18 4.5-11 4.5 11"/><path d="M5.5 14.5h6"/><path d="M16 12h6"/></svg>
-    </button>
-    <button
-        id="font-size-increase"
-        type="button"
-        class="font-size-btn inline-flex items-center justify-center"
-        aria-label="Schrift vergrößern"
-    >
-        <!-- A mit Plus -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 18 4.5-11 4.5 11"/><path d="M5.5 14.5h6"/><path d="M19 9v6"/><path d="M16 12h6"/></svg>
-    </button>
-</div>
+<button
+    id="font-size-toggle"
+    type="button"
+    class="font-size-btn inline-flex items-center justify-center"
+    aria-label="Schriftgröße ändern"
+>
+    <span class="font-size-glyph" aria-hidden="true">A</span>
+</button>
 
 <script>
-    const STEPS = ['100%', '110%', '120%', '130%', '140%']
+    const STEPS = ['100%', '110%', '120%', '130%', '140%', '160%', '180%', '200%']
     const DEFAULT_INDEX = 2
     const STORAGE_KEY = 'fontScale'
 
@@ -46,10 +35,8 @@
     function applyIndex(index: number) {
         const i = clampIndex(index)
         document.documentElement.style.fontSize = STEPS[i]
-        const dec = document.getElementById('font-size-decrease') as HTMLButtonElement | null
-        const inc = document.getElementById('font-size-increase') as HTMLButtonElement | null
-        if (dec) dec.disabled = i <= 0
-        if (inc) inc.disabled = i >= STEPS.length - 1
+        const btn = document.getElementById('font-size-toggle')
+        if (btn) btn.setAttribute('aria-label', `Schriftgröße ändern (aktuell ${STEPS[i]})`)
     }
 
     function setIndex(index: number) {
@@ -59,17 +46,12 @@
     }
 
     const bind = () => {
-        // Aktuellen Zustand (auch disabled-Status der Buttons) herstellen.
         applyIndex(getIndex())
-        const dec = document.getElementById('font-size-decrease') as (HTMLButtonElement & { dataset: DOMStringMap }) | null
-        const inc = document.getElementById('font-size-increase') as (HTMLButtonElement & { dataset: DOMStringMap }) | null
-        if (dec && !dec.dataset.fontBound) {
-            dec.dataset.fontBound = '1'
-            dec.addEventListener('click', () => setIndex(getIndex() - 1))
-        }
-        if (inc && !inc.dataset.fontBound) {
-            inc.dataset.fontBound = '1'
-            inc.addEventListener('click', () => setIndex(getIndex() + 1))
+        const btn = document.getElementById('font-size-toggle') as (HTMLButtonElement & { dataset: DOMStringMap }) | null
+        if (btn && !btn.dataset.fontBound) {
+            btn.dataset.fontBound = '1'
+            // Beim letzten Schritt wieder von vorn beginnen.
+            btn.addEventListener('click', () => setIndex((getIndex() + 1) % STEPS.length))
         }
     }
 
@@ -84,11 +66,14 @@
         border: 0;
         padding: 0;
         cursor: pointer;
-        line-height: 0;
+        width: 24px;
+        height: 24px;
+        line-height: 1;
     }
 
-    .font-size-btn:disabled {
-        opacity: 0.35;
-        cursor: default;
+    .font-size-glyph {
+        font-weight: 700;
+        font-size: 22px;
+        line-height: 1;
     }
 </style>
