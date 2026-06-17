@@ -5,6 +5,9 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { SITE_URL } from "../../consts";
 import {Image} from 'astro:assets';
 import ThemeToggle from "../../components/ThemeToggle.astro";
+import FontSizeControl from "../../components/FontSizeControl.astro";
+import BackButton from "../../components/BackButton.astro";
+import ReadingProgress from "../../components/ReadingProgress.astro";
 import { getReadingTime, getExcerpt } from '../../utils/readingTime';
 import { getRelatedPosts } from '../../utils/relatedPosts';
 import { getAllStories, contentVersion } from '../../utils/storyblok';
@@ -72,12 +75,17 @@ const heroImage = story.content.image?.filename;
   type="article"
   publishedDate={story.content.pubDate}
 >
-    <div class="relative w-full invisible lg:visible">
-        <div class="absolute right-5 top-5 lg:right-10 lg:top-10">
+    <ReadingProgress />
+    <div class="relative w-full">
+        <div class="absolute left-5 top-5 lg:left-10 lg:top-10">
+            <BackButton />
+        </div>
+        <div class="absolute right-5 top-5 lg:right-10 lg:top-10 flex items-center gap-3">
+            <FontSizeControl />
             <ThemeToggle />
         </div>
     </div>
-    <div class="px-8 py-12 md:px-12 mx-auto lg:pb-24 max-w-7xl lg:px-32 lg:pt-32">
+    <div class="px-8 pb-12 pt-24 md:px-12 md:pt-28 mx-auto lg:pb-24 max-w-7xl lg:px-32 lg:pt-32">
       <div class="lg:text-center">
         {heroImage && (
           <Image
@@ -110,8 +118,5 @@ const heroImage = story.content.image?.filename;
             </div>
         </div>
         <RelatedPosts posts={relatedPosts} />
-        <div class="justify-center pt-4 w-full hidden max-lg:flex">
-                <ThemeToggle />
-        </div>
     </div>
 </BaseLayout>

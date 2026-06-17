@@ -65,12 +65,30 @@ const { title, description, image, url, type, publishedDate } = Astro.props;
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) meta.setAttribute('content', theme === 'dark' ? '#111827' : '#ffffff');
         }
+        // Schriftgröße-Stufen entsprechen FontSizeControl.astro; relativ zur
+        // normalen Lesegröße (100% = Standard). Tatsächliche Root-Größe =
+        // BASE_PERCENT * Stufe / 100 (BASE_PERCENT = :root 120% aus global.css).
+        var FONT_BASE_PERCENT = 120;
+        var FONT_STEPS = [80, 90, 100, 110, 120, 140, 160, 180];
+        function applyFontScale() {
+          var index = 2;
+          try {
+            var stored = localStorage.getItem('fontScale');
+            if (stored !== null) {
+              var n = parseInt(stored, 10);
+              if (!isNaN(n)) index = Math.max(0, Math.min(FONT_STEPS.length - 1, n));
+            }
+          } catch (e) {}
+          document.documentElement.style.fontSize = (FONT_BASE_PERCENT * FONT_STEPS[index] / 100) + '%';
+        }
         applyTheme(getTheme());
+        applyFontScale();
         window.addEventListener('pageshow', function (event) {
-          if (event.persisted) applyTheme(getTheme());
+          if (event.persisted) { applyTheme(getTheme()); applyFontScale(); }
         });
         document.addEventListener('astro:after-swap', function () {
           applyTheme(getTheme());
+          applyFontScale();
         });
       })();
     </script>

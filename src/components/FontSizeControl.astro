@@ -1,0 +1,222 @@
+---
+// Schriftgrößen-Steuerung: cleanes Icon im Header, das ein kleines Popover
+// mit Schieberegler öffnet. Die Stufen sind relativ zur normalen Lesegröße
+// (100% = Standard); die tatsächliche Root-Schriftgröße ist BASE_PERCENT *
+// Stufe / 100 (BASE_PERCENT = :root 120% aus global.css).
+---
+<div id="font-size-control" class="fontsize">
+    <button
+        id="font-size-toggle"
+        type="button"
+        class="fontsize-btn inline-flex items-center justify-center"
+        aria-haspopup="dialog"
+        aria-expanded="false"
+        aria-controls="font-size-popover"
+        aria-label="Schriftgröße anpassen"
+    >
+        <!-- https://lucide.dev/icons/a-large-small -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 14h-5"/><path d="M16 16v-3.5a2.5 2.5 0 0 1 5 0V16"/><path d="M4.5 13h6"/><path d="m3 16 4.5-11 4.5 11"/></svg>
+    </button>
+
+    <div id="font-size-popover" class="fontsize-popover" role="dialog" aria-label="Schriftgröße" hidden>
+        <div class="fontsize-title">Schriftgröße</div>
+        <div class="fontsize-slider-row">
+            <span class="fontsize-a-small" aria-hidden="true">A</span>
+            <input
+                id="font-size-range"
+                class="fontsize-range"
+                type="range"
+                min="0"
+                max="7"
+                step="1"
+                value="2"
+                aria-label="Schriftgröße"
+            />
+            <span class="fontsize-a-large" aria-hidden="true">A</span>
+        </div>
+        <div id="font-size-percent" class="fontsize-percent" aria-live="polite">100%</div>
+    </div>
+</div>
+
+<script>
+    const BASE_PERCENT = 120
+    const STEPS = [80, 90, 100, 110, 120, 140, 160, 180]
+    const DEFAULT_INDEX = 2
+    const STORAGE_KEY = 'fontScale'
+
+    let docBound = false
+
+    function clampIndex(i: number) {
+        return Math.max(0, Math.min(STEPS.length - 1, i))
+    }
+
+    function getIndex() {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY)
+            if (stored !== null) {
+                const n = parseInt(stored, 10)
+                if (!Number.isNaN(n)) return clampIndex(n)
+            }
+        } catch (e) {}
+        return DEFAULT_INDEX
+    }
+
+    function applyIndex(index: number) {
+        const i = clampIndex(index)
+        const label = STEPS[i] + '%'
+        document.documentElement.style.fontSize = (BASE_PERCENT * STEPS[i] / 100) + '%'
+        const range = document.getElementById('font-size-range') as HTMLInputElement | null
+        if (range && range.value !== String(i)) range.value = String(i)
+        const percent = document.getElementById('font-size-percent')
+        if (percent) percent.textContent = label
+        const btn = document.getElementById('font-size-toggle')
+        if (btn) btn.setAttribute('aria-label', `Schriftgröße anpassen (aktuell ${label})`)
+    }
+
+    function setIndex(index: number) {
+        const i = clampIndex(index)
+        applyIndex(i)
+        try { localStorage.setItem(STORAGE_KEY, String(i)) } catch (e) {}
+    }
+
+    function setOpen(open: boolean) {
+        const pop = document.getElementById('font-size-popover')
+        const btn = document.getElementById('font-size-toggle')
+        if (!pop || !btn) return
+        pop.hidden = !open
+        btn.setAttribute('aria-expanded', String(open))
+    }
+
+    function isOpen() {
+        const pop = document.getElementById('font-size-popover')
+        return !!pop && !pop.hidden
+    }
+
+    const onDocClick = (e: MouseEvent) => {
+        if (!isOpen()) return
+        const wrapper = document.getElementById('font-size-control')
+        if (wrapper && !wrapper.contains(e.target as Node)) setOpen(false)
+    }
+
+    const onKey = (e: KeyboardEvent) => {
+        if (e.key === 'Escape' && isOpen()) {
+            setOpen(false)
+            document.getElementById('font-size-toggle')?.focus()
+        }
+    }
+
+    const bind = () => {
+        applyIndex(getIndex())
+
+        const btn = document.getElementById('font-size-toggle') as (HTMLButtonElement & { dataset: DOMStringMap }) | null
+        if (btn && !btn.dataset.fontBound) {
+            btn.dataset.fontBound = '1'
+            btn.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!isOpen()) })
+        }
+
+        const range = document.getElementById('font-size-range') as (HTMLInputElement & { dataset: DOMStringMap }) | null
+        if (range && !range.dataset.fontBound) {
+            range.dataset.fontBound = '1'
+            range.addEventListener('input', () => setIndex(parseInt(range.value, 10)))
+        }
+
+        if (!docBound) {
+            docBound = true
+            document.addEventListener('click', onDocClick)
+            document.addEventListener('keydown', onKey)
+        }
+    }
+
+    bind()
+    document.addEventListener('astro:after-swap', () => { setOpen(false); bind() })
+</script>
+
+<style>
+    .fontsize {
+        position: relative;
+        display: inline-flex;
+    }
+
+    .fontsize-btn {
+        color: inherit;
+        background: transparent;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        line-height: 0;
+    }
+
+    .fontsize-popover {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        z-index: 50;
+        width: 210px;
+        padding: 14px;
+        border-radius: 12px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        color: #111827;
+    }
+
+    .fontsize-popover[hidden] {
+        display: none;
+    }
+
+    :global(.dark) .fontsize-popover {
+        background: #1f2937;
+        border-color: #374151;
+        color: #f9fafb;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .fontsize-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0.7;
+        margin-bottom: 10px;
+    }
+
+    .fontsize-slider-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .fontsize-a-small {
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 1;
+    }
+
+    .fontsize-a-large {
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    .fontsize-range {
+        flex: 1;
+        height: 4px;
+        cursor: pointer;
+        accent-color: #111827;
+    }
+
+    :global(.dark) .fontsize-range {
+        accent-color: #f9fafb;
+    }
+
+    .fontsize-percent {
+        margin-top: 10px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        opacity: 0.8;
+    }
+</style>
