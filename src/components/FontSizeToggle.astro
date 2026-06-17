@@ -1,0 +1,71 @@
+<button id="font-size-toggle" aria-label="Schriftgröße ändern">
+    <span class="fs-icon fs-icon-normal" aria-hidden="true">A</span>
+    <span class="fs-icon fs-icon-large" aria-hidden="true">A</span>
+    <span class="fs-icon fs-icon-xl" aria-hidden="true">A</span>
+</button>
+
+<script>
+    const SIZES = ['normal', 'large', 'xl'] as const;
+    type FontSize = typeof SIZES[number];
+
+    const getSize = (): FontSize => {
+        const attr = document.documentElement.getAttribute('data-font-size');
+        return (SIZES.includes(attr as FontSize) ? attr : 'normal') as FontSize;
+    };
+
+    const applySize = (size: FontSize) => {
+        if (size === 'normal') document.documentElement.removeAttribute('data-font-size');
+        else document.documentElement.setAttribute('data-font-size', size);
+        try { localStorage.setItem('font-size', size); } catch (e) {}
+    };
+
+    const onToggle = () => {
+        const current = getSize();
+        const next = SIZES[(SIZES.indexOf(current) + 1) % SIZES.length];
+        applySize(next);
+    };
+
+    const bind = () => {
+        const btn = document.getElementById('font-size-toggle') as (HTMLButtonElement & { dataset: DOMStringMap }) | null;
+        if (!btn || btn.dataset.fsBound) return;
+        btn.dataset.fsBound = '1';
+        btn.addEventListener('click', onToggle);
+    };
+    bind();
+    document.addEventListener('astro:after-swap', bind);
+</script>
+
+<style is:global>
+    #font-size-toggle {
+        display: flex;
+        align-items: baseline;
+        gap: 1px;
+        cursor: pointer;
+        color: inherit;
+        background: none;
+        border: none;
+        padding: 0;
+        line-height: 1;
+    }
+
+    .fs-icon {
+        font-weight: 600;
+        font-family: sans-serif;
+        line-height: 1;
+    }
+
+    /* Normal state: show only the medium A */
+    .fs-icon-normal { display: none; font-size: 0.85rem; }
+    .fs-icon-large  { display: block; font-size: 1.1rem; }
+    .fs-icon-xl     { display: none; font-size: 1.4rem; }
+
+    /* Large state */
+    html[data-font-size="large"] .fs-icon-normal { display: none; }
+    html[data-font-size="large"] .fs-icon-large  { display: none; }
+    html[data-font-size="large"] .fs-icon-xl     { display: block; }
+
+    /* XL state: cycle back indicator – show small A */
+    html[data-font-size="xl"] .fs-icon-normal { display: block; }
+    html[data-font-size="xl"] .fs-icon-large  { display: none; }
+    html[data-font-size="xl"] .fs-icon-xl     { display: none; }
+</style>
