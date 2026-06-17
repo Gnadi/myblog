@@ -6,10 +6,11 @@
 <button
     id="font-size-toggle"
     type="button"
-    class="font-size-btn inline-flex items-center justify-center"
+    class="font-size-btn inline-flex items-center justify-center gap-1"
     aria-label="Schriftgröße ändern"
 >
     <span class="font-size-glyph" aria-hidden="true">A</span>
+    <span id="font-size-percent" class="font-size-percent" aria-hidden="true">100%</span>
 </button>
 
 <script>
@@ -37,6 +38,8 @@
         document.documentElement.style.fontSize = STEPS[i]
         const btn = document.getElementById('font-size-toggle')
         if (btn) btn.setAttribute('aria-label', `Schriftgröße ändern (aktuell ${STEPS[i]})`)
+        const percent = document.getElementById('font-size-percent')
+        if (percent) percent.textContent = STEPS[i]
     }
 
     function setIndex(index: number) {
@@ -66,7 +69,6 @@
         border: 0;
         padding: 0;
         cursor: pointer;
-        width: 24px;
         height: 24px;
         line-height: 1;
     }
@@ -75,5 +77,12 @@
         font-weight: 700;
         font-size: 22px;
         line-height: 1;
+    }
+
+    .font-size-percent {
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
     }
 </style>
