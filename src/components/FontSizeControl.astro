@@ -1,0 +1,94 @@
+---
+// Schriftgrößen-Steuerung: skaliert die gesamte Website über die
+// Root-Schriftgröße. Stufen entsprechen dem Default aus global.css (120%).
+---
+<div class="font-size-control inline-flex items-center gap-1" role="group" aria-label="Schriftgröße anpassen">
+    <button
+        id="font-size-decrease"
+        type="button"
+        class="font-size-btn inline-flex items-center justify-center"
+        aria-label="Schrift verkleinern"
+    >
+        <!-- A mit Minus -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 18 4.5-11 4.5 11"/><path d="M5.5 14.5h6"/><path d="M16 12h6"/></svg>
+    </button>
+    <button
+        id="font-size-increase"
+        type="button"
+        class="font-size-btn inline-flex items-center justify-center"
+        aria-label="Schrift vergrößern"
+    >
+        <!-- A mit Plus -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 18 4.5-11 4.5 11"/><path d="M5.5 14.5h6"/><path d="M19 9v6"/><path d="M16 12h6"/></svg>
+    </button>
+</div>
+
+<script>
+    const STEPS = ['100%', '110%', '120%', '130%', '140%']
+    const DEFAULT_INDEX = 2
+    const STORAGE_KEY = 'fontScale'
+
+    function clampIndex(i: number) {
+        return Math.max(0, Math.min(STEPS.length - 1, i))
+    }
+
+    function getIndex() {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY)
+            if (stored !== null) {
+                const n = parseInt(stored, 10)
+                if (!Number.isNaN(n)) return clampIndex(n)
+            }
+        } catch (e) {}
+        return DEFAULT_INDEX
+    }
+
+    function applyIndex(index: number) {
+        const i = clampIndex(index)
+        document.documentElement.style.fontSize = STEPS[i]
+        const dec = document.getElementById('font-size-decrease') as HTMLButtonElement | null
+        const inc = document.getElementById('font-size-increase') as HTMLButtonElement | null
+        if (dec) dec.disabled = i <= 0
+        if (inc) inc.disabled = i >= STEPS.length - 1
+    }
+
+    function setIndex(index: number) {
+        const i = clampIndex(index)
+        applyIndex(i)
+        try { localStorage.setItem(STORAGE_KEY, String(i)) } catch (e) {}
+    }
+
+    const bind = () => {
+        // Aktuellen Zustand (auch disabled-Status der Buttons) herstellen.
+        applyIndex(getIndex())
+        const dec = document.getElementById('font-size-decrease') as (HTMLButtonElement & { dataset: DOMStringMap }) | null
+        const inc = document.getElementById('font-size-increase') as (HTMLButtonElement & { dataset: DOMStringMap }) | null
+        if (dec && !dec.dataset.fontBound) {
+            dec.dataset.fontBound = '1'
+            dec.addEventListener('click', () => setIndex(getIndex() - 1))
+        }
+        if (inc && !inc.dataset.fontBound) {
+            inc.dataset.fontBound = '1'
+            inc.addEventListener('click', () => setIndex(getIndex() + 1))
+        }
+    }
+
+    bind()
+    document.addEventListener('astro:after-swap', bind)
+</script>
+
+<style>
+    .font-size-btn {
+        color: inherit;
+        background: transparent;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        line-height: 0;
+    }
+
+    .font-size-btn:disabled {
+        opacity: 0.35;
+        cursor: default;
+    }
+</style>

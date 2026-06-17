@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import {useStoryblokApi} from "@storyblok/astro";
 import BlogPostList from "../../storyblok/BlogPostList.astro";
 import ThemeToggle from "../../components/ThemeToggle.astro";
+import FontSizeControl from "../../components/FontSizeControl.astro";
 import { getAllStories, contentVersion } from "../../utils/storyblok";
 
 export async function getStaticPaths() {
@@ -30,7 +31,8 @@ const stories = await getAllStories(storyblokApi, {
 
 <BaseLayout title={`Blogposts „${tag}“`}>
   <div class="relative w-full">
-    <div class="absolute right-5 top-5 lg:right-10 lg:top-10">
+    <div class="absolute right-5 top-5 lg:right-10 lg:top-10 flex items-center gap-3">
+      <FontSizeControl />
       <ThemeToggle />
     </div>
   </div>

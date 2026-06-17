@@ -1,8 +1,10 @@
 ---
 import ThemeToggle from "../ThemeToggle.astro";
+import FontSizeControl from "../FontSizeControl.astro";
 ---
 <div class="relative w-full">
-  <div class="absolute right-5 top-5 lg:right-10 lg:top-10">
+  <div class="absolute right-5 top-5 lg:right-10 lg:top-10 flex items-center gap-3">
+    <FontSizeControl />
     <ThemeToggle />
   </div>
 </div>

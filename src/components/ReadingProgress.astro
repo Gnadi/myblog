@@ -1,0 +1,53 @@
+---
+// Lesefortschritt-Anzeige: dünner Balken am oberen Rand, der sich
+// passend zum Scroll-Fortschritt des Artikels füllt.
+---
+<div
+    id="reading-progress"
+    class="fixed top-0 left-0 z-50 h-1 w-full bg-transparent pointer-events-none"
+    role="progressbar"
+    aria-label="Lesefortschritt"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="0"
+>
+    <div id="reading-progress-bar" class="h-full w-0 bg-black dark:bg-white"></div>
+</div>
+
+<script>
+    const bind = () => {
+        const container = document.getElementById('reading-progress')
+        const bar = document.getElementById('reading-progress-bar') as (HTMLElement & { dataset: DOMStringMap }) | null
+        if (!container || !bar) return
+
+        let ticking = false
+
+        const update = () => {
+            ticking = false
+            const scrollTop = window.scrollY || document.documentElement.scrollTop
+            const max = document.documentElement.scrollHeight - window.innerHeight
+            const progress = max > 0 ? Math.min(100, Math.max(0, (scrollTop / max) * 100)) : 0
+            bar.style.width = progress + '%'
+            container.setAttribute('aria-valuenow', String(Math.round(progress)))
+        }
+
+        const onScroll = () => {
+            if (ticking) return
+            ticking = true
+            requestAnimationFrame(update)
+        }
+
+        if (!bar.dataset.progressBound) {
+            bar.dataset.progressBound = '1'
+            const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            if (!reduce) bar.style.transition = 'width 100ms linear'
+            window.addEventListener('scroll', onScroll, { passive: true })
+            window.addEventListener('resize', onScroll, { passive: true })
+        }
+
+        update()
+    }
+
+    bind()
+    document.addEventListener('astro:after-swap', bind)
+</script>
