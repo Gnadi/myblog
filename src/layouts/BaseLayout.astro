@@ -65,12 +65,28 @@ const { title, description, image, url, type, publishedDate } = Astro.props;
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) meta.setAttribute('content', theme === 'dark' ? '#111827' : '#ffffff');
         }
+        function getFontSize() {
+          try {
+            var s = localStorage.getItem('font-size');
+            if (s === 'large' || s === 'xl') return s;
+          } catch (e) {}
+          return 'normal';
+        }
+        function applyFontSize(size) {
+          if (size === 'normal') document.documentElement.removeAttribute('data-font-size');
+          else document.documentElement.setAttribute('data-font-size', size);
+        }
         applyTheme(getTheme());
+        applyFontSize(getFontSize());
         window.addEventListener('pageshow', function (event) {
-          if (event.persisted) applyTheme(getTheme());
+          if (event.persisted) {
+            applyTheme(getTheme());
+            applyFontSize(getFontSize());
+          }
         });
         document.addEventListener('astro:after-swap', function () {
           applyTheme(getTheme());
+          applyFontSize(getFontSize());
         });
       })();
     </script>
