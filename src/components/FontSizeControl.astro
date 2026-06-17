@@ -14,7 +14,11 @@
 </button>
 
 <script>
-    const STEPS = ['100%', '110%', '120%', '130%', '140%', '160%', '180%', '200%']
+    // Die Stufen sind relativ zur normalen Lesegröße (100% = Standard).
+    // Die tatsächliche Root-Schriftgröße ist BASE_PERCENT * Stufe / 100,
+    // wobei BASE_PERCENT der Standardwert aus global.css ist (:root 120%).
+    const BASE_PERCENT = 120
+    const STEPS = [80, 90, 100, 110, 120, 140, 160, 180]
     const DEFAULT_INDEX = 2
     const STORAGE_KEY = 'fontScale'
 
@@ -35,11 +39,12 @@
 
     function applyIndex(index: number) {
         const i = clampIndex(index)
-        document.documentElement.style.fontSize = STEPS[i]
+        const label = STEPS[i] + '%'
+        document.documentElement.style.fontSize = (BASE_PERCENT * STEPS[i] / 100) + '%'
         const btn = document.getElementById('font-size-toggle')
-        if (btn) btn.setAttribute('aria-label', `Schriftgröße ändern (aktuell ${STEPS[i]})`)
+        if (btn) btn.setAttribute('aria-label', `Schriftgröße ändern (aktuell ${label})`)
         const percent = document.getElementById('font-size-percent')
-        if (percent) percent.textContent = STEPS[i]
+        if (percent) percent.textContent = label
     }
 
     function setIndex(index: number) {

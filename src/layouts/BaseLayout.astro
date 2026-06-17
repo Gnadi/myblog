@@ -65,9 +65,11 @@ const { title, description, image, url, type, publishedDate } = Astro.props;
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) meta.setAttribute('content', theme === 'dark' ? '#111827' : '#ffffff');
         }
-        // Schriftgröße-Stufen entsprechen FontSizeControl.astro; Default 120%
-        // entspricht der Basis aus global.css.
-        var FONT_STEPS = ['100%', '110%', '120%', '130%', '140%', '160%', '180%', '200%'];
+        // Schriftgröße-Stufen entsprechen FontSizeControl.astro; relativ zur
+        // normalen Lesegröße (100% = Standard). Tatsächliche Root-Größe =
+        // BASE_PERCENT * Stufe / 100 (BASE_PERCENT = :root 120% aus global.css).
+        var FONT_BASE_PERCENT = 120;
+        var FONT_STEPS = [80, 90, 100, 110, 120, 140, 160, 180];
         function applyFontScale() {
           var index = 2;
           try {
@@ -77,7 +79,7 @@ const { title, description, image, url, type, publishedDate } = Astro.props;
               if (!isNaN(n)) index = Math.max(0, Math.min(FONT_STEPS.length - 1, n));
             }
           } catch (e) {}
-          document.documentElement.style.fontSize = FONT_STEPS[index];
+          document.documentElement.style.fontSize = (FONT_BASE_PERCENT * FONT_STEPS[index] / 100) + '%';
         }
         applyTheme(getTheme());
         applyFontScale();
