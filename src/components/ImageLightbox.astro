@@ -82,11 +82,18 @@
       }
     }
 
+    // Storybloks Standard-CDN (a.storyblok.com) sendet keine CORS-Header, daher
+    // schlägt ein fetch() der Bytes fehl. Storybloks offizieller Workaround ist
+    // die a2-Domain, die CORS-Header liefert. Nur fürs Herunterladen umschreiben.
+    function corsSrc(src: string): string {
+      return src.replace(/:\/\/a(-[a-z0-9]+)?\.storyblok\.com/i, '://a2$1.storyblok.com');
+    }
+
     async function download() {
       if (!currentSrc) return;
       const filename = filenameFromSrc(currentSrc);
       try {
-        const res = await fetch(currentSrc);
+        const res = await fetch(corsSrc(currentSrc));
         if (!res.ok) throw new Error('fetch failed');
         const blob = await res.blob();
         const objectUrl = URL.createObjectURL(blob);
