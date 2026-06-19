@@ -1,0 +1,148 @@
+---
+// Vollbild-Anzeige (Lightbox) mit Download für Artikel-Bilder.
+// Wird einmal pro Blog-Detailseite eingebunden. Das Script verdrahtet alle
+// Bilder im .prose-styles-Container, sodass sie per Klick im Vollbild geöffnet
+// und von dort heruntergeladen werden können.
+---
+<div
+  id="image-lightbox"
+  class="hidden fixed inset-0 z-[100] items-center justify-center bg-black/90 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Bild in Vollbild-Ansicht"
+>
+  <button
+    data-lightbox-download
+    type="button"
+    aria-label="Bild herunterladen"
+    title="Bild herunterladen"
+    class="absolute top-4 right-16 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+    </svg>
+  </button>
+  <button
+    data-lightbox-close
+    type="button"
+    aria-label="Schließen"
+    title="Schließen"
+    class="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  </button>
+  <img
+    data-lightbox-img
+    src=""
+    alt=""
+    class="max-h-[90vh] max-w-[90vw] object-contain select-none"
+  />
+</div>
+
+<script>
+  function setupLightbox() {
+    const overlay = document.getElementById('image-lightbox');
+    if (!overlay) return;
+
+    const overlayImg = overlay.querySelector('[data-lightbox-img]') as HTMLImageElement | null;
+    const closeBtn = overlay.querySelector('[data-lightbox-close]') as HTMLButtonElement | null;
+    const downloadBtn = overlay.querySelector('[data-lightbox-download]') as HTMLButtonElement | null;
+    if (!overlayImg || !closeBtn || !downloadBtn) return;
+
+    let currentSrc = '';
+    let currentAlt = '';
+
+    function open(src: string, alt: string) {
+      currentSrc = src;
+      currentAlt = alt;
+      overlayImg!.src = src;
+      overlayImg!.alt = alt;
+      overlay!.classList.remove('hidden');
+      overlay!.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      closeBtn!.focus();
+    }
+
+    function close() {
+      overlay!.classList.add('hidden');
+      overlay!.classList.remove('flex');
+      document.body.style.overflow = '';
+      overlayImg!.src = '';
+    }
+
+    function filenameFromSrc(src: string): string {
+      try {
+        const path = new URL(src, window.location.href).pathname;
+        const name = path.substring(path.lastIndexOf('/') + 1);
+        return name && name.includes('.') ? name : 'bild.jpg';
+      } catch {
+        return 'bild.jpg';
+      }
+    }
+
+    // Storybloks Standard-CDN (a.storyblok.com) sendet keine CORS-Header, daher
+    // schlägt ein fetch() der Bytes fehl. Storybloks offizieller Workaround ist
+    // die a2-Domain, die CORS-Header liefert. Nur fürs Herunterladen umschreiben.
+    function corsSrc(src: string): string {
+      return src.replace(/:\/\/a(-[a-z0-9]+)?\.storyblok\.com/i, '://a2$1.storyblok.com');
+    }
+
+    async function download() {
+      if (!currentSrc) return;
+      const filename = filenameFromSrc(currentSrc);
+      try {
+        const res = await fetch(corsSrc(currentSrc));
+        if (!res.ok) throw new Error('fetch failed');
+        const blob = await res.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = objectUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(objectUrl);
+      } catch {
+        // Fallback: Bild in neuem Tab öffnen, falls fetch (z. B. CORS) scheitert
+        window.open(currentSrc, '_blank', 'noopener');
+      }
+    }
+
+    // Artikel-Bilder klickbar machen
+    const images = document.querySelectorAll<HTMLImageElement>('.prose-styles img');
+    images.forEach((img) => {
+      if (img.dataset.lightboxBound) return;
+      img.dataset.lightboxBound = 'true';
+      img.classList.add('cursor-zoom-in');
+      img.setAttribute('role', 'button');
+      img.setAttribute('tabindex', '0');
+      img.addEventListener('click', () => open(img.currentSrc || img.src, img.alt));
+      img.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          open(img.currentSrc || img.src, img.alt);
+        }
+      });
+    });
+
+    closeBtn.addEventListener('click', close);
+    downloadBtn.addEventListener('click', download);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !overlay.classList.contains('hidden')) close();
+    });
+  }
+
+  // Astro bündelt dieses Script als deferred module; der DOM ist beim Ausführen
+  // i. d. R. bereit. Zur Sicherheit beide Fälle abdecken (kein View-Transitions-
+  // Router aktiv, daher voller Page-Load pro Navigation).
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupLightbox);
+  } else {
+    setupLightbox();
+  }
+</script>
