@@ -2,6 +2,7 @@
 import BaseHead from "@/components/BaseHead.astro";
 import Footer from "@/components/global/Footer.astro";
 import Analytics from '@vercel/analytics/astro';
+import { themeInitScript } from "@/lib/theme";
 
 interface Props {
   title?: string;
@@ -48,23 +49,12 @@ const { title, description, image, url, type, publishedDate } = Astro.props;
         }
       }
     </style>
+    <!-- Theme vor dem ersten Paint setzen. Die Wahl teilen sich Portfolio, CV
+         und Blog über ein Cookie auf der gemeinsamen Domain — siehe
+         src/lib/theme.ts. -->
+    <script is:inline set:html={themeInitScript} />
     <script is:inline>
       (function () {
-        function getTheme() {
-          try {
-            var stored = localStorage.getItem('theme');
-            if (stored === 'dark' || stored === 'light') return stored;
-          } catch (e) {}
-          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-        function applyTheme(theme) {
-          document.documentElement.classList.toggle('dark', theme === 'dark');
-          document.documentElement.style.colorScheme = theme;
-          // Keep the mobile browser UI (status/address bar) in sync with the
-          // active theme. Matches body bg: white / gray-900.
-          var meta = document.querySelector('meta[name="theme-color"]');
-          if (meta) meta.setAttribute('content', theme === 'dark' ? '#111827' : '#ffffff');
-        }
         // Schriftgröße-Stufen entsprechen FontSizeControl.astro; relativ zur
         // normalen Lesegröße (100% = Standard). Tatsächliche Root-Größe =
         // BASE_PERCENT * Stufe / 100 (BASE_PERCENT = :root 120% aus global.css).
@@ -81,15 +71,11 @@ const { title, description, image, url, type, publishedDate } = Astro.props;
           } catch (e) {}
           document.documentElement.style.fontSize = (FONT_BASE_PERCENT * FONT_STEPS[index] / 100) + '%';
         }
-        applyTheme(getTheme());
         applyFontScale();
         window.addEventListener('pageshow', function (event) {
-          if (event.persisted) { applyTheme(getTheme()); applyFontScale(); }
+          if (event.persisted) applyFontScale();
         });
-        document.addEventListener('astro:after-swap', function () {
-          applyTheme(getTheme());
-          applyFontScale();
-        });
+        document.addEventListener('astro:after-swap', applyFontScale);
       })();
     </script>
   </head>
