@@ -6,16 +6,17 @@
 </button>
 
 <script>
+    import { applyTheme, currentTheme, storeTheme } from "@/lib/theme"
+
     let transitionTimer: ReturnType<typeof setTimeout> | undefined
     const onToggle = () => {
         const root = document.documentElement
         root.setAttribute('data-theme-transition', '')
-        const next = root.classList.contains('dark') ? 'light' : 'dark'
-        root.classList.toggle('dark', next === 'dark')
-        root.style.colorScheme = next
-        const meta = document.querySelector('meta[name="theme-color"]')
-        if (meta) meta.setAttribute('content', next === 'dark' ? '#111827' : '#ffffff')
-        try { localStorage.setItem('theme', next) } catch (e) {}
+        const next = currentTheme() === 'dark' ? 'light' : 'dark'
+        applyTheme(next)
+        // Persisted for this site and for the portfolio and the CV, which read
+        // the same choice from a cookie — see src/lib/theme.ts.
+        storeTheme(next)
         clearTimeout(transitionTimer)
         transitionTimer = setTimeout(() => root.removeAttribute('data-theme-transition'), 450)
     }
