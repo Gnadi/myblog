@@ -1,0 +1,65 @@
+---
+/**
+ * Eine Reihe von KI-Assistenten, die jeweils mit einer fertigen Zusammenfassung
+ * der aktuellen Seite verlinken. Prompt und Linkformate: src/lib/askAi.ts.
+ */
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "@/consts";
+import { buildPrompt, labels, providers } from "@/lib/askAi";
+
+interface Props {
+  /** Seitentitel, derselbe Wert, den das Layout an BaseHead weitergibt. */
+  title?: string;
+  /** Meta-Description der Seite. */
+  description?: string;
+  /** Kanonische URL. Fällt auf den aktuellen Pfad zurück — wie in BaseHead. */
+  url?: string;
+}
+
+const {
+  title = SITE_TITLE,
+  description = SITE_DESCRIPTION,
+  url = new URL(Astro.url.pathname, SITE_URL).href,
+} = Astro.props;
+
+const prompt = encodeURIComponent(buildPrompt({ title, description, url }));
+---
+
+<aside
+  class="border-t border-gray-200 dark:border-gray-800"
+  aria-label={labels.heading}
+>
+  <div class="mx-auto w-full max-w-7xl px-8 py-12 md:px-12 lg:px-32">
+    <p class="text-center text-sm text-zinc-500 dark:text-zinc-400">
+      {labels.heading}
+    </p>
+    <ul role="list" class="mt-4 flex flex-wrap justify-center gap-3">
+      {
+        providers.map(({ name, glyph, href }) => {
+          const action = labels.action.replace("%s", name);
+          return (
+            <li>
+              <a
+                href={href(prompt)}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={action}
+                class="flex h-11 w-11 items-center justify-center rounded-full border border-gray-300 dark:border-gray-600 text-black dark:text-white transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <span class="sr-only">{action}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox={glyph.viewBox}
+                  fill="currentColor"
+                  aria-hidden="true"
+                  class="h-5 w-5"
+                >
+                  <path d={glyph.path} />
+                </svg>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</aside>

@@ -1,6 +1,7 @@
 ---
 import BaseHead from "@/components/BaseHead.astro";
 import Footer from "@/components/global/Footer.astro";
+import AskAi from "@/components/AskAi.astro";
 import Analytics from '@vercel/analytics/astro';
 import { themeInitScript } from "@/lib/theme";
 
@@ -11,9 +12,13 @@ interface Props {
   url?: string;
   type?: "website" | "article";
   publishedDate?: string;
+  /** Die „mit KI zusammenfassen“-Leiste anbieten. Aus, wo es nichts
+   *  zusammenzufassen gibt, also auf der 404. */
+  askAi?: boolean;
 }
 
-const { title, description, image, url, type, publishedDate } = Astro.props;
+const { title, description, image, url, type, publishedDate, askAi = true } =
+  Astro.props;
 ---
 
 <html lang="de">
@@ -81,6 +86,7 @@ const { title, description, image, url, type, publishedDate } = Astro.props;
   </head>
   <body class="bg-white dark:bg-gray-900 flex flex-col min-h-screen">
     <main class="flex-grow"><slot /></main>
+    {askAi && <AskAi title={title} description={description} url={url} />}
     <Footer />
   </body>
 </html>
