@@ -87,8 +87,8 @@ export interface PromptInput {
 
 /**
  * Der Prompt, den der Assistent bekommt. Er benennt die Seite, gibt ihre
- * Kurzbeschreibung mit und verweist auf die Startseite, damit die Antwort auf
- * diesem Blog fußt statt auf dem, was das Modell zufällig zu erinnern glaubt.
+ * Kurzbeschreibung mit und verweist auf llms.txt, damit die Antwort auf diesem
+ * Blog fußt statt auf dem, was das Modell zufällig zu erinnern glaubt.
  */
 export function buildPrompt({ title, description, url }: PromptInput): string {
   return [
@@ -103,7 +103,7 @@ export function buildPrompt({ title, description, url }: PromptInput): string {
     "",
     `Seite: „${title}“ — ${url}`,
     description ? `Kurzbeschreibung: ${description}` : null,
-    `Weitere Beiträge: ${SITE_URL}/`,
+    `Überblick über den Blog: ${SITE_URL}/llms.txt`,
   ]
     .filter((line) => line !== null)
     .join("\n");
