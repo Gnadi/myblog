@@ -13,6 +13,7 @@ import {
   SITE_NAME,
   DEFAULT_OG_IMAGE,
 } from "../consts";
+import { buildGraph, personNode, websiteNode, type JsonLdNode } from "../lib/schema";
 
 interface Props {
   /** Page-specific title. Rendered as "{title} · HelloDad". Omit for homepage. */
@@ -27,6 +28,10 @@ interface Props {
   type?: "website" | "article";
   /** ISO-8601 date string for article:published_time (article type only). */
   publishedDate?: string;
+  /** Page-specific JSON-LD nodes, merged into the site-wide @graph. */
+  schema?: JsonLdNode[];
+  /** Keep the page out of the index. */
+  noindex?: boolean;
 }
 
 const {
@@ -35,14 +40,40 @@ const {
   image,
   type = "website",
   publishedDate,
+  schema = [],
+  noindex = false,
 } = Astro.props;
 
 const pageTitle = title ? `${title} · ${SITE_TITLE}` : SITE_TITLE;
 
 // Use the explicitly passed URL, or derive it from the current page path so
 // every page gets a unique, correct canonical without any hardcoding.
-const canonicalURL =
-  Astro.props.url ?? new URL(Astro.url.pathname, SITE_URL).href;
+//
+// The trailing slash is normalised here rather than at every call site: Astro
+// builds in directory format, so the sitemap lists /blog/slug/ while the post
+// page used to declare /blog/slug as its canonical. Two spellings of one URL
+// in two signals is exactly the ambiguity a canonical exists to remove.
+function withTrailingSlash(href: string): string {
+  const parsed = new URL(href);
+  if (!parsed.pathname.endsWith("/") && !/\.[a-z0-9]+$/i.test(parsed.pathname)) {
+    parsed.pathname += "/";
+  }
+  return parsed.href;
+}
+
+const canonicalURL = withTrailingSlash(
+  Astro.props.url ?? new URL(Astro.url.pathname, SITE_URL).href,
+);
+
+// The two nodes every page carries, plus whatever the page adds. This is the
+// side of the reference the portfolio has been making all along: its Person
+// node points at blog.gnadlinger.me/#website, which nothing published until
+// now. See src/lib/schema.ts.
+const jsonLd = buildGraph([
+  websiteNode(SITE_DESCRIPTION),
+  personNode(),
+  ...schema,
+]);
 
 // Ensure the OG image is always an absolute URL.
 const rawImage = image ?? DEFAULT_OG_IMAGE;
@@ -55,7 +86,10 @@ const ogImage = rawImage.startsWith("http")
 
 <title>{pageTitle}</title>
 <meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, follow" />}
 <link rel="canonical" href={canonicalURL} />
+
+<script type="application/ld+json" set:html={jsonLd} />
 
 <!-- Open Graph -->
 <meta property="og:type" content={type} />

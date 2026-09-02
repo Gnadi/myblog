@@ -32,3 +32,11 @@ export function getExcerpt(content: string | object, maxLength = 160): string {
   const lastSpace = truncated.lastIndexOf(' ');
   return `${truncated.slice(0, lastSpace > 0 ? lastSpace : maxLength)}…`;
 }
+
+/** Wörter im Beitrag — speist `wordCount` in der BlogPosting-Auszeichnung. */
+export function getWordCount(content: string | object): number {
+  return toPlainText(content)
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word.length > 0).length;
+}
