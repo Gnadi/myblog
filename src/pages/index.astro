@@ -5,6 +5,8 @@ import Cta from "@/components/global/Cta.astro";
 import BlogPostList from "../storyblok/BlogPostList.astro";
 import { useStoryblokApi } from "@storyblok/astro";
 import { getAllStories, contentVersion } from "../utils/storyblok";
+import { SITE_DESCRIPTION, SITE_URL } from "../consts";
+import { breadcrumbNode, collectionPageNode } from "../lib/schema";
 
 const storyblokApi = useStoryblokApi();
 const stories = await getAllStories(storyblokApi, {
@@ -17,10 +19,16 @@ const { data: tagData } = await storyblokApi.get("cdn/tags", {
 const uniqueTags: string[] = [
   ...new Set<string>(tagData.tags.map((tag: { name: string }) => tag.name)),
 ];
----
-<BaseLayout>
 
-  <Hero />
+const canonical = `${SITE_URL}/`;
+const schema = [
+  collectionPageNode(canonical, "HelloDad", SITE_DESCRIPTION),
+  breadcrumbNode(canonical, [{ name: "HelloDad" }]),
+];
+---
+<BaseLayout description={SITE_DESCRIPTION} schema={schema}>
+
+  <Hero heading="Hello.._  DAD" />
   <section>
     <div class="px-8 md:px-12 mx-auto max-w-7xl py-12 lg:px-32">
       <ol role="list" class="flex flex-wrap gap-3">

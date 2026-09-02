@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    # Declared at job level so the build step's `if` can see it. A secret
+    # referenced only in a step's own `env:` is not visible to that step's
+    # condition.
+    env:
+      STORYBLOK_TOKEN: ${{ secrets.STORYBLOK_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # The type check needs no credentials, so it gates every pull request
+      # including ones from forks. `npm run build` runs it again as its first
+      # half; a few duplicated seconds are worth keeping this gate independent
+      # of whether the secret happens to be available.
+      - run: npm run check
+
+      # The build calls the Storyblok API for the posts, so it can only run
+      # where the token is available — on pull requests from forks it is not.
+      # Skipping is the honest outcome there; failing would report the code as
+      # broken when only the credential is missing.
+      - name: Build
+        if: ${{ env.STORYBLOK_TOKEN != '' }}
+        run: npm run build

@@ -4,6 +4,7 @@ import Footer from "@/components/global/Footer.astro";
 import AskAi from "@/components/AskAi.astro";
 import Analytics from '@vercel/analytics/astro';
 import { themeInitScript } from "@/lib/theme";
+import type { JsonLdNode } from "@/lib/schema";
 
 interface Props {
   title?: string;
@@ -12,13 +13,26 @@ interface Props {
   url?: string;
   type?: "website" | "article";
   publishedDate?: string;
+  /** Seitenspezifische JSON-LD-Knoten. */
+  schema?: JsonLdNode[];
+  /** Seite aus dem Index nehmen. */
+  noindex?: boolean;
   /** Die „mit KI zusammenfassen“-Leiste anbieten. Aus, wo es nichts
    *  zusammenzufassen gibt, also auf der 404. */
   askAi?: boolean;
 }
 
-const { title, description, image, url, type, publishedDate, askAi = true } =
-  Astro.props;
+const {
+  title,
+  description,
+  image,
+  url,
+  type,
+  publishedDate,
+  schema,
+  noindex,
+  askAi = true,
+} = Astro.props;
 ---
 
 <html lang="de">
@@ -30,6 +44,8 @@ const { title, description, image, url, type, publishedDate, askAi = true } =
       url={url}
       type={type}
       publishedDate={publishedDate}
+      schema={schema}
+      noindex={noindex}
     />
     <Analytics />
     <style is:global>

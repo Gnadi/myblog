@@ -8,7 +8,8 @@ import ThemeToggle from "../../components/ThemeToggle.astro";
 import FontSizeControl from "../../components/FontSizeControl.astro";
 import BackButton from "../../components/BackButton.astro";
 import ReadingProgress from "../../components/ReadingProgress.astro";
-import { getReadingTime, getExcerpt } from '../../utils/readingTime';
+import { getReadingTime, getExcerpt, getWordCount } from '../../utils/readingTime';
+import { blogPostingNode, breadcrumbNode } from '../../lib/schema';
 import { getRelatedPosts } from '../../utils/relatedPosts';
 import { getAllStories, contentVersion } from '../../utils/storyblok';
 import RelatedPosts from '../../storyblok/RelatedPosts.astro';
@@ -58,6 +59,45 @@ const relatedPosts = getRelatedPosts(
 );
 
 const heroImage = story.content.image?.filename;
+
+const description =
+    story.content.description || getExcerpt(story.content.content) || undefined;
+
+// Directory build format: the sitemap lists /blog/<slug>/, so the canonical
+// has to agree. BaseHead normalises this too, but the value is passed on to
+// the structured data from here, so it is settled once at the source.
+const canonical = new URL(`/blog/${slug}/`, SITE_URL).href;
+
+const publishedDate = story.content.pubDate
+    ? new Date(story.content.pubDate).toISOString()
+    : story.published_at
+      ? new Date(story.published_at).toISOString()
+      : undefined;
+
+// Storyblok tracks its own last-changed timestamp; it is the honest source for
+// dateModified, and blogPostingNode falls back to the publication date.
+const modifiedDate = story.published_at
+    ? new Date(story.published_at).toISOString()
+    : undefined;
+
+const schema = [
+    blogPostingNode({
+        canonical,
+        headline: story.content.title,
+        description: description ?? '',
+        datePublished: publishedDate,
+        dateModified: modifiedDate,
+        image: heroImage
+            ? `${heroImage}/m/1200x630/filters:format(webp)`
+            : undefined,
+        keywords: story.tag_list ?? [],
+        wordCount: getWordCount(story.content.content ?? ''),
+    }),
+    breadcrumbNode(canonical, [
+        { name: 'HelloDad', item: `${SITE_URL}/` },
+        { name: story.content.title },
+    ]),
+];
 ---
 <script>
     import hljs from 'highlight.js/lib/common';
@@ -70,11 +110,12 @@ const heroImage = story.content.image?.filename;
 
 <BaseLayout
   title={story.content.title}
-  description={story.content.description || getExcerpt(story.content.content) || undefined}
+  description={description}
   image={heroImage ? `${heroImage}/m/1200x630/filters:format(webp)` : undefined}
-  url={new URL(`/blog/${slug}`, SITE_URL).href}
+  url={canonical}
   type="article"
-  publishedDate={story.content.pubDate}
+  publishedDate={publishedDate}
+  schema={schema}
 >
     <ReadingProgress />
     <div class="relative w-full">

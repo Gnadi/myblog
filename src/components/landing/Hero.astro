@@ -1,17 +1,31 @@
 ---
 import ThemeToggle from "../ThemeToggle.astro";
 import FontSizeControl from "../FontSizeControl.astro";
+
+interface Props {
+  /**
+   * Die Überschrift der Seite, als `h1`. Vorher stand hier fest die
+   * Wortmarke — auch auf /tags/, das dieselbe Komponente einbindet und damit
+   * dieselbe `h1` ein zweites Mal indexierbar machte.
+   */
+  heading: string;
+}
+
+const { heading } = Astro.props;
 ---
+
 <div class="relative w-full">
   <div class="absolute right-5 top-5 lg:right-10 lg:top-10 flex items-center gap-3">
     <FontSizeControl />
     <ThemeToggle />
   </div>
 </div>
-    <div class="px-8 pt-20 md:px-12 mx-auto lg:pb-10 max-w-7xl lg:px-10">
-      <div class="lg:text-center">
-        <h1 class="text-4xl tracking-tight text-balance font-medium font-display text-black md:text-8xl dark:text-white">
-          Hello.._  DAD
-        </h1>
-      </div>
+<div class="px-8 pt-20 md:px-12 mx-auto lg:pb-10 max-w-7xl lg:px-10">
+  <div class="lg:text-center">
+    <h1
+      class="text-4xl tracking-tight text-balance font-medium font-display text-black md:text-8xl dark:text-white"
+    >
+      {heading}
+    </h1>
   </div>
+</div>

@@ -1,7 +1,7 @@
 ---
-import {Image} from 'astro:assets';
-const currentYear = new Date().getFullYear();
+import { CV_URL, PORTFOLIO_URL } from "@/consts";
 
+const currentYear = new Date().getFullYear();
 ---
 <footer class="bg-white border-t border-gray-200 dark:border-gray-800 dark:bg-gray-900">
     <div class="group text-black dark:text-white">
@@ -12,6 +12,11 @@ const currentYear = new Date().getFullYear();
         <p><a href="/about">Über mich</a></p>
         <p><a href="/impressum">Impressum</a></p>
         <p><a href="/rss.xml">RSS Feed</a></p>
+        <!-- Portfolio und CV standen bisher nur in llms.txt. Google liest die
+             Datei nicht, also fand der Linkfluss nur in eine Richtung statt:
+             beide Geschwisterseiten verlinken hierher, zurück ging nichts. -->
+        <p><a href={`${PORTFOLIO_URL}/`}>Portfolio</a></p>
+        <p><a href={`${CV_URL}/`}>Lebenslauf</a></p>
         <p id="pwa-install-wrap" hidden>
             <a id="pwa-install" href="#" role="button">App installieren</a>
         </p>
