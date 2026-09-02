@@ -1,5 +1,11 @@
 ---
 import "../styles/global.css";
+// JetBrains Mono is the `font-mono` family in tailwind.config.cjs — code
+// blocks and inline code. Served from this origin via Fontsource instead of
+// fetched from api.fontshare.com, which put a third-party connection in front
+// of the first paint. Only the two cuts the site uses are imported.
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/700.css";
 import {
   SITE_TITLE,
   SITE_DESCRIPTION,
@@ -81,7 +87,21 @@ const ogImage = rawImage.startsWith("http")
 <link rel="apple-touch-icon" href="/favicons/apple-touch-icon.png" />
 <link rel="manifest" href="/favicons/site.webmanifest" />
 <meta name="msapplication-TileColor" content="#ffffff" />
-<meta name="theme-color" content="#ffffff" />
+<!-- Zwei Werte statt einem: Die Seite hat einen Dunkelmodus, und mit einem
+     festen Weiß bleibt die Browserleiste am Handy hell und bricht optisch
+     aus der Seite aus. #111827 ist bg-gray-900, der Body-Hintergrund im
+     Dunkelmodus. Das Manifest kennt nur einen theme_color und bleibt hell —
+     der Wert gilt dort nur für den Startbildschirm. -->
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: light)"
+  content="#ffffff"
+/>
+<meta
+  name="theme-color"
+  media="(prefers-color-scheme: dark)"
+  content="#111827"
+/>
 <script>
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
@@ -89,10 +109,3 @@ const ogImage = rawImage.startsWith("http")
     });
   }
 </script>
-<link
-  href="https://api.fontshare.com/v2/css?f[]=jet-brains-mono@1,2&display=swap"
-  rel="stylesheet"
-  type="text/css"
-  media="print"
-  onload="this.media='all'"
-/>
