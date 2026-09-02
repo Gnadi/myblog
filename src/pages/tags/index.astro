@@ -3,6 +3,8 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import {useStoryblokApi} from "@storyblok/astro";
 import Hero from "../../components/landing/Hero.astro";
 import { contentVersion } from "../../utils/storyblok";
+import { SITE_URL } from "../../consts";
+import { breadcrumbNode, collectionPageNode } from "../../lib/schema";
 
 const storyblokApi = useStoryblokApi();
 const { data } = await storyblokApi.get('cdn/tags', {
@@ -11,10 +13,23 @@ const { data } = await storyblokApi.get('cdn/tags', {
 const uniqueTags: string[] = [
   ...new Set<string>(data.tags.map((tag: { name: string }) => tag.name)),
 ];
+
+const DESCRIPTION =
+  "Alle Themen im Blog von Johannes Gnadlinger — von Familienalltag über Essen bis zu Technik.";
+const canonical = `${SITE_URL}/tags/`;
+const schema = [
+  collectionPageNode(canonical, "Alle Themen", DESCRIPTION),
+  breadcrumbNode(canonical, [
+    { name: "HelloDad", item: `${SITE_URL}/` },
+    { name: "Alle Themen" },
+  ]),
+];
 ---
 
-<BaseLayout title="Alle Tags">
-  <Hero />
+<BaseLayout title="Alle Themen" description={DESCRIPTION} schema={schema}>
+  <!-- Eigene Überschrift statt der Wortmarke: Sonst trügen Startseite und
+       diese Seite dieselbe h1. -->
+  <Hero heading="Alle Themen" tagline={DESCRIPTION} />
   <section>
     <div class="px-8 md:px-12 mx-auto max-w-7xl py-12 lg:px-32">
       <ol role="list" class="flex flex-wrap gap-3">

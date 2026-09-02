@@ -2,8 +2,20 @@
 import { Image } from "astro:assets";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import portrait from "@/assets/about.jpg";
+import { SITE_URL } from "@/consts";
+import { breadcrumbNode } from "@/lib/schema";
+
+const DESCRIPTION =
+  "Wer hier schreibt: Johannes Gnadlinger, Papa zweier Töchter aus Linz und Backend Engineer — über Familie, Essen und Tech.";
+const canonical = `${SITE_URL}/about/`;
+const schema = [
+  breadcrumbNode(canonical, [
+    { name: "HelloDad", item: `${SITE_URL}/` },
+    { name: "Über mich" },
+  ]),
+];
 ---
-<BaseLayout title="Über mich">
+<BaseLayout title="Über mich" description={DESCRIPTION} schema={schema}>
   <section class="px-8 md:px-12 mx-auto max-w-3xl py-16 lg:px-32">
     <Image
       src={portrait}

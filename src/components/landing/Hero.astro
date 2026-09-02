@@ -1,17 +1,43 @@
 ---
 import ThemeToggle from "../ThemeToggle.astro";
 import FontSizeControl from "../FontSizeControl.astro";
+
+interface Props {
+  /**
+   * Die Überschrift der Seite. Als `h1` gesetzt, wenn die Seite sonst keine
+   * hat — die Startseite —, sonst als `p`, damit die Wortmarke nicht auf zwei
+   * indexierbaren Seiten dieselbe `h1` stellt.
+   */
+  heading: string;
+  /** Zeile unter der Überschrift. Trägt die Suchbegriffe, die zählen. */
+  tagline?: string | undefined;
+  /** `false` auf Seiten, deren eigene Überschrift die `h1` ist. */
+  asHeading?: boolean;
+}
+
+const { heading, tagline, asHeading = true } = Astro.props;
+const Tag = asHeading ? "h1" : "p";
 ---
+
 <div class="relative w-full">
   <div class="absolute right-5 top-5 lg:right-10 lg:top-10 flex items-center gap-3">
     <FontSizeControl />
     <ThemeToggle />
   </div>
 </div>
-    <div class="px-8 pt-20 md:px-12 mx-auto lg:pb-10 max-w-7xl lg:px-10">
-      <div class="lg:text-center">
-        <h1 class="text-4xl tracking-tight text-balance font-medium font-display text-black md:text-8xl dark:text-white">
-          Hello.._  DAD
-        </h1>
-      </div>
+<div class="px-8 pt-20 md:px-12 mx-auto lg:pb-10 max-w-7xl lg:px-10">
+  <div class="lg:text-center">
+    <Tag
+      class="text-4xl tracking-tight text-balance font-medium font-display text-black md:text-8xl dark:text-white"
+    >
+      {heading}
+    </Tag>
+    {
+      tagline && (
+        <p class="mt-4 text-lg text-zinc-600 dark:text-zinc-400 lg:mx-auto lg:max-w-2xl">
+          {tagline}
+        </p>
+      )
+    }
   </div>
+</div>
