@@ -18,7 +18,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Astro 5 still accepts Node 20, but the portfolio is already on
+          # Astro 6, which requires >=22.12.0. Running both on 22 means the
+          # next major here is not a CI surprise.
+          node-version: 22
           cache: npm
 
       - run: npm ci
