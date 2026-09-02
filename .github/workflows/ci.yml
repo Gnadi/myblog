@@ -23,8 +23,10 @@ jobs:
 
       - run: npm ci
 
-      # Runs without credentials: it type-checks the source, including the
-      # JSON-LD helpers and every page's props.
+      # The type check needs no credentials, so it gates every pull request
+      # including ones from forks. `npm run build` runs it again as its first
+      # half; a few duplicated seconds are worth keeping this gate independent
+      # of whether the secret happens to be available.
       - run: npm run check
 
       # The build calls the Storyblok API for the posts, so it can only run
