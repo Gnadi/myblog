@@ -1,0 +1,59 @@
+---
+/**
+ * Typografie-Styleguide für die lokale Entwicklung.
+ *
+ * Rendert `src/fixtures/prose-kitchen-sink.md` durch dieselbe Pipeline wie ein
+ * echter Blogpost (marked → `.prose-styles` → highlight.js), aber ohne
+ * Storyblok. Damit lässt sich jede Änderung an `src/styles/global.css` in
+ * beiden Themes prüfen, ohne einen Post zu öffnen — und die Playwright-Tests
+ * in `tests/` haben eine stabile, tokenfreie Seite zum Messen.
+ *
+ * Die Seite ist absichtlich Teil des normalen Builds (sonst könnten die Tests
+ * nicht gegen `astro build` laufen), aber `noindex` und aus der Sitemap
+ * gefiltert — siehe `astro.config.mjs`.
+ */
+import { marked } from "marked";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ThemeToggle from "@/components/ThemeToggle.astro";
+import FontSizeControl from "@/components/FontSizeControl.astro";
+import BackButton from "@/components/BackButton.astro";
+import source from "@/fixtures/prose-kitchen-sink.md?raw";
+
+const content = marked(source);
+---
+
+<script>
+    // Identisch zur Blogpost-Seite, damit die hljs-Farben hier genauso
+    // aussehen wie im echten Artikel.
+    import hljs from 'highlight.js/lib/common';
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach((block: HTMLElement) => {
+            hljs.highlightElement(block);
+        });
+    });
+</script>
+
+<BaseLayout
+  title="Typografie-Styleguide"
+  description="Alle Prose-Elemente auf einer Seite, zum Prüfen von Light- und Dark-Mode."
+  askAi={false}
+  noindex
+>
+  <div class="relative w-full">
+    <div class="absolute left-5 top-5 lg:left-10 lg:top-10">
+      <BackButton />
+    </div>
+    <div class="absolute right-5 top-5 lg:right-10 lg:top-10 flex items-center gap-3">
+      <FontSizeControl />
+      <ThemeToggle />
+    </div>
+  </div>
+
+  <div class="px-8 pb-12 pt-24 md:px-12 md:pt-28 mx-auto lg:pb-24 max-w-7xl lg:px-32 lg:pt-32">
+    <div class="mt-12 max-w-2xl mx-auto">
+      <div class="prose-styles" data-testid="prose">
+        <Fragment set:html={content} />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

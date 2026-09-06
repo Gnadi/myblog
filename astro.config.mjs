@@ -15,7 +15,11 @@ export default defineConfig({
     }
   },
   site: 'https://blog.gnadlinger.me',
-  integrations: [sitemap(), icon(), storyblok({
+  integrations: [sitemap({
+    // Der Typografie-Styleguide unter /dev/ ist ein Entwicklungswerkzeug und
+    // gehört nicht in den Index — die Seite selbst setzt zusätzlich noindex.
+    filter: (page) => !page.includes('/dev/'),
+  }), icon(), storyblok({
     accessToken: env.STORYBLOK_TOKEN,
     components: {
       blogPost: 'storyblok/BlogPost',
