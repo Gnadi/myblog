@@ -33,9 +33,14 @@ const {
   noindex,
   askAi = true,
 } = Astro.props;
+
+// Die Hintergrundfarbe unten am <html> und nicht nur am <body>: In der
+// installierten PWA malt der Browser den Bereich hinter der Statusleiste und
+// beim Überscrollen aus dem Wurzelelement. Ohne die Klassen blieb dort im
+// Dunkelmodus das Standard-Weiß stehen.
 ---
 
-<html lang="de">
+<html lang="de" class="bg-white dark:bg-gray-900">
   <head>
     <BaseHead
       title={title}
