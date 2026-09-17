@@ -28,8 +28,12 @@ export function applyTheme(theme: Theme) {
   root.classList.toggle("dark", theme === "dark");
   root.style.colorScheme = theme;
   // Keep the mobile browser UI (status/address bar) in sync with the theme.
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", THEME_COLOR[theme]);
+  // Every theme-color meta gets the same value: an installed PWA picks the one
+  // matching the system's prefers-color-scheme, so leaving any of them on the
+  // other theme's colour is what turns the status bar white over a dark page.
+  document
+    .querySelectorAll('meta[name="theme-color"]')
+    .forEach((meta) => meta.setAttribute("content", THEME_COLOR[theme]));
 }
 
 export function readCookieTheme(): Theme | null {
@@ -109,8 +113,10 @@ export const themeInitScript = `(function () {
     var root = document.documentElement;
     root.classList.toggle("dark", theme === "dark");
     root.style.colorScheme = theme;
-    var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", COLOR[theme]);
+    var metas = document.querySelectorAll('meta[name="theme-color"]');
+    for (var i = 0; i < metas.length; i++) {
+      metas[i].setAttribute("content", COLOR[theme]);
+    }
   }
 
   function sync() {
