@@ -11,7 +11,7 @@ const { posts } = Astro.props as { posts: PostSummary[] };
     <ul class="grid grid-cols-1 gap-4 sm:grid-cols-3">
       {posts.map(post => (
         <li>
-          <a href={`/${post.slug}`} class="group block rounded-lg border dark:border-slate-600 overflow-hidden hover:shadow-md transition-shadow">
+          <a href={`/${post.slug}/`} class="group block rounded-lg border dark:border-slate-600 overflow-hidden hover:shadow-md transition-shadow">
             {post.image && (
               <Image
                 src={`${post.image}/m/600x400/filters:format(webp)`}
