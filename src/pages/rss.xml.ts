@@ -19,7 +19,7 @@ export async function GET(context: any) {
       title: story.content.title,
       pubDate: new Date(story.published_at),
       description: story.content.description ?? '',
-      link: `/blog/${story.slug}`,
+      link: `/blog/${story.slug}/`,
     })),
   });
 }

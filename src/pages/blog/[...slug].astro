@@ -145,7 +145,7 @@ const schema = [
               <div class="flex gap-3">
                   {
                       (story.tag_list ?? []).map((tag: string) => (
-                          <a href={`/tags/${encodeURIComponent(tag)}`} class="inline-flex items-center uppercase text-xs font-medium text-black dark:text-white hover:text-zinc-500 dark:hover:text-zinc-300 transition-colors">
+                          <a href={`/tags/${encodeURIComponent(tag)}/`} class="inline-flex items-center uppercase text-xs font-medium text-black dark:text-white hover:text-zinc-500 dark:hover:text-zinc-300 transition-colors">
                               {tag}
                           </a>
                       ))

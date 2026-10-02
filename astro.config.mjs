@@ -15,6 +15,11 @@ export default defineConfig({
     }
   },
   site: 'https://blog.gnadlinger.me',
+  // Ein Beitrag hat genau eine URL: /blog/slug/. Vercel leitet die Variante
+  // ohne Slash per 308 dorthin um (vercel.json), damit Google nicht zwei
+  // Adressen mit demselben Inhalt crawlt und eine davon als "Alternative page
+  // with proper canonical tag" aussortiert.
+  trailingSlash: 'always',
   integrations: [sitemap(), icon(), storyblok({
     accessToken: env.STORYBLOK_TOKEN,
     components: {

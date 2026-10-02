@@ -34,7 +34,7 @@ function isoDate(value: string): string {
 /** Eine Zeile pro Beitrag, im Listenformat von llmstxt.org. */
 function postLine(story: Story): string {
   const title = story.content.title ?? story.slug;
-  const url = `${SITE_URL}/blog/${story.slug}`;
+  const url = `${SITE_URL}/blog/${story.slug}/`;
   const summary =
     story.content.description?.trim() || getExcerpt(story.content.content ?? "");
   const date = isoDate(story.published_at);
@@ -78,7 +78,7 @@ ${posts.map(postLine).join("\n")}
 
 ## Themen
 
-${tags.map((tag) => `- [${tag}](${SITE_URL}/tags/${encodeURIComponent(tag)})`).join("\n")}
+${tags.map((tag) => `- [${tag}](${SITE_URL}/tags/${encodeURIComponent(tag)}/)`).join("\n")}
 
 ## Seiten
 
