@@ -1,0 +1,92 @@
+---
+/**
+ * Teilen-Abschnitt am Ende eines Artikels: „Teilen“ öffnet das System-Menü
+ * (nur wo die Web Share API existiert), „Link kopieren“ funktioniert überall.
+ */
+interface Props {
+  /** Artikeltitel. */
+  title: string;
+  /** Kanonische URL des Artikels. */
+  url: string;
+  /** Kurzbeschreibung des Artikels. */
+  text?: string;
+}
+
+const { title, url, text = "" } = Astro.props;
+
+const buttonClass =
+  "inline-flex h-11 w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-gray-300 dark:border-gray-600 px-6 text-sm font-medium text-black dark:text-white transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer";
+---
+
+<section
+  class="mt-12 border-t border-gray-200 dark:border-gray-800 pt-8 text-center"
+  aria-labelledby="share-heading"
+  data-share-section
+  data-title={title}
+  data-url={url}
+  data-text={text}
+>
+  <h2 id="share-heading" class="text-base font-medium text-black dark:text-white">
+    Gefällt dir der Artikel?
+  </h2>
+  <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Teile ihn mit anderen.</p>
+
+  <div class="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
+    <button type="button" data-share-native style="display: none" class={buttonClass}>
+      <!-- https://lucide.dev/icons/share-2 -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+      Teilen
+    </button>
+    <button type="button" data-share-copy class={buttonClass}>
+      <!-- https://lucide.dev/icons/link -->
+      <svg data-icon-link xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <!-- https://lucide.dev/icons/check -->
+      <svg data-icon-check style="display: none" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+      <span data-copy-label>Link kopieren</span>
+    </button>
+  </div>
+  <p class="sr-only" role="status" aria-live="polite" data-share-status></p>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-share-section]").forEach((section) => {
+    const { title = "", url = "", text = "" } = section.dataset;
+    const nativeButton = section.querySelector<HTMLButtonElement>("[data-share-native]");
+    const copyButton = section.querySelector<HTMLButtonElement>("[data-share-copy]");
+    const label = section.querySelector<HTMLElement>("[data-copy-label]");
+    const iconLink = section.querySelector<SVGElement>("[data-icon-link]");
+    const iconCheck = section.querySelector<SVGElement>("[data-icon-check]");
+    const status = section.querySelector<HTMLElement>("[data-share-status]");
+    let timer: number | undefined;
+
+    if (nativeButton && typeof navigator.share === "function") {
+      nativeButton.style.display = "";
+      nativeButton.addEventListener("click", async () => {
+        try {
+          await navigator.share({ title, text, url });
+        } catch {
+          // Abbruch durch die Nutzer:in oder nicht unterstützt: nichts zu tun.
+        }
+      });
+    }
+
+    const setCopied = (copied: boolean) => {
+      if (label) label.textContent = copied ? "Link kopiert" : "Link kopieren";
+      if (iconLink) iconLink.style.display = copied ? "none" : "";
+      if (iconCheck) iconCheck.style.display = copied ? "" : "none";
+      if (status) status.textContent = copied ? "Link kopiert" : "";
+    };
+
+    copyButton?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        window.prompt("Link kopieren:", url);
+        return;
+      }
+      setCopied(true);
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => setCopied(false), 2000);
+    });
+  });
+</script>
