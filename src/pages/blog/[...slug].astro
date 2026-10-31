@@ -160,6 +160,12 @@ const schema = [
             <div class="prose-styles">
                 <StoryblokComponent blok={story.content}/>
             </div>
+            <div class="mt-12 flex items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-800 pt-6">
+                <p class="text-sm text-zinc-500 dark:text-zinc-400">Hat dir der Artikel gefallen? Teile ihn weiter.</p>
+                <div>
+                    <ShareButton title={story.content.title} url={canonical} text={description} />
+                </div>
+            </div>
         </div>
         <RelatedPosts posts={relatedPosts} />
     </div>
