@@ -3,6 +3,7 @@ import BaseHead from "@/components/BaseHead.astro";
 import Footer from "@/components/global/Footer.astro";
 import AskAi from "@/components/AskAi.astro";
 import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 import { themeInitScript } from "@/lib/theme";
 import type { JsonLdNode } from "@/lib/schema";
 
@@ -53,6 +54,7 @@ const {
       noindex={noindex}
     />
     <Analytics />
+    <SpeedInsights />
     <style is:global>
       /* Nur während des Theme-Wechsels aktiv (Attribut setzt der ThemeToggle),
          damit nicht dauerhaft jedes Element eine Transition trägt. */
