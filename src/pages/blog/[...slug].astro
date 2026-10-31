@@ -145,7 +145,6 @@ const schema = [
           <div class="flex  flex-col md:flex-row mt-4 justify-between">
               <p class="text-xs text-zinc-500 ">{story.content.pubDate?.toString().slice(0, 10)} - Written by: {story.content.author} · {readingTime} min Lesezeit</p>
               <div class="flex items-center gap-3">
-                  <ShareButton title={story.content.title} url={canonical} text={description} />
                   {
                       (story.tag_list ?? []).map((tag: string) => (
                           <a href={`/tags/${encodeURIComponent(tag)}/`} class="inline-flex items-center uppercase text-xs font-medium text-black dark:text-white hover:text-zinc-500 dark:hover:text-zinc-300 transition-colors">
@@ -153,6 +152,7 @@ const schema = [
                           </a>
                       ))
                   }
+                  <ShareButton title={story.content.title} url={canonical} text={description} />
               </div>
           </div>
       </div>
