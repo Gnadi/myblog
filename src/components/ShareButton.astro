@@ -21,10 +21,10 @@ const { title, url, text = "" } = Astro.props;
   data-title={title}
   data-url={url}
   data-text={text}
-  class="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-gray-300 dark:border-gray-600 px-4 text-sm font-medium text-black dark:text-white transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+  class="inline-flex h-7 items-center justify-center gap-1.5 rounded-full border border-gray-300 dark:border-gray-600 px-3 text-xs font-medium text-black dark:text-white transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
 >
   <!-- https://lucide.dev/icons/share-2 -->
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
   <span data-share-label>Teilen</span>
 </button>
 <span class="sr-only" role="status" aria-live="polite" data-share-status></span>
