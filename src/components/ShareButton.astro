@@ -21,19 +21,19 @@ const { title, url, text = "" } = Astro.props;
   data-title={title}
   data-url={url}
   data-text={text}
-  aria-label="Teilen"
-  title="Teilen"
-  class="-my-2 inline-flex h-9 w-9 items-center justify-center rounded-full text-black dark:text-white transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+  class="-my-2 inline-flex h-9 items-center gap-1.5 uppercase text-xs font-medium text-black dark:text-white hover:text-zinc-500 dark:hover:text-zinc-300 transition-colors cursor-pointer"
 >
   <!-- https://lucide.dev/icons/share-2 -->
-  <svg data-icon-share xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+  <svg data-icon-share xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
   <!-- https://lucide.dev/icons/check -->
-  <svg data-icon-check style="display: none" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+  <svg data-icon-check style="display: none" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+  <span data-share-label>Teilen</span>
 </button>
 <span class="sr-only" role="status" aria-live="polite" data-share-status></span>
 
 <script>
   document.querySelectorAll<HTMLButtonElement>("[data-share-button]").forEach((button) => {
+    const label = button.querySelector<HTMLElement>("[data-share-label]");
     const iconShare = button.querySelector<SVGElement>("[data-icon-share]");
     const iconCheck = button.querySelector<SVGElement>("[data-icon-check]");
     const status = button.parentElement?.querySelector<HTMLElement>("[data-share-status]");
@@ -43,13 +43,13 @@ const { title, url, text = "" } = Astro.props;
     const flash = (message: string) => {
       if (iconShare) iconShare.style.display = "none";
       if (iconCheck) iconCheck.style.display = "";
-      button.title = message;
+      if (label) label.textContent = message;
       if (status) status.textContent = message;
       window.clearTimeout(timer);
       timer = window.setTimeout(() => {
         if (iconShare) iconShare.style.display = "";
         if (iconCheck) iconCheck.style.display = "none";
-        button.title = "Teilen";
+        if (label) label.textContent = "Teilen";
         if (status) status.textContent = "";
       }, 2000);
     };
